@@ -1,0 +1,711 @@
+/* 二次元星空风格模板 - Anime Starry Style */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: #fff;
+  position: relative;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* 星空背景 */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+    radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 160px 120px, #fff, transparent),
+    radial-gradient(2px 2px at 200px 50px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 250px 160px, #fff, transparent),
+    radial-gradient(2px 2px at 300px 90px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 350px 200px, #fff, transparent),
+    radial-gradient(2px 2px at 400px 130px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 450px 60px, #fff, transparent),
+    radial-gradient(2px 2px at 500px 180px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 550px 100px, #fff, transparent),
+    radial-gradient(2px 2px at 600px 220px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 650px 40px, #fff, transparent),
+    radial-gradient(2px 2px at 700px 150px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 750px 80px, #fff, transparent);
+  background-repeat: repeat;
+  background-size: 800px 300px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* ==================== 主标题区域 ==================== */
+.hero {
+  text-align: center;
+  padding: 50px 20px 40px;
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #ff6b9d 0%, #ffd93d 50%, #6dd5ed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 4px;
+  position: relative;
+  display: inline-block;
+}
+
+.hero-title::before {
+  content: '★';
+  position: absolute;
+  left: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  color: #ffd93d;
+  text-shadow: 0 0 10px #ffd93d;
+  -webkit-text-fill-color: #ffd93d;
+}
+
+.hero-title::after {
+  content: '★';
+  position: absolute;
+  right: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  color: #ffd93d;
+  text-shadow: 0 0 10px #ffd93d;
+  -webkit-text-fill-color: #ffd93d;
+}
+
+.hero-sub {
+  margin-top: 15px;
+  font-size: 18px;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 8px;
+}
+
+.hero-date {
+  margin-top: 20px;
+  display: inline-block;
+  background: rgba(255,107,157,0.2);
+  border: 2px solid #ff6b9d;
+  color: #ff6b9d;
+  padding: 8px 25px;
+  border-radius: 30px;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+/* ==================== 数据横幅 ==================== */
+.stats-banner {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.stats-banner::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,107,157,0.5), transparent);
+  z-index: 0;
+}
+
+.stat-item {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 20px 30px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.stat-item:first-child {
+  border-radius: 20px 0 0 20px;
+}
+
+.stat-item:last-child {
+  border-radius: 0 20px 20px 0;
+}
+
+.stat-num {
+  font-size: 32px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #ff6b9d, #ffd93d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  margin-top: 5px;
+  letter-spacing: 2px;
+}
+
+/* ==================== 漫画分镜布局 ==================== */
+.manga-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.panel {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #ff6b9d, #ffd93d, #6dd5ed);
+}
+
+.panel-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.panel-icon {
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, #ff6b9d, #ff8fab);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.panel-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.panel-content {
+  padding: 20px;
+}
+
+/* 话题面板 */
+.topics-panel {
+  grid-column: span 7;
+}
+
+.topic-item {
+  padding: 15px;
+  background: rgba(255,107,157,0.1);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  border-left: 3px solid #ff6b9d;
+}
+
+.topic-item:last-child {
+  margin-bottom: 0;
+}
+
+.topic-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.topic-desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.topic-users {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.topic-users-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+}
+
+.contributor-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mini-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #ff6b9d;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.1);
+  font-size: 10px;
+}
+
+.mini-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mini-name {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+}
+
+/* 活跃度面板 */
+.activity-panel {
+  grid-column: span 5;
+}
+
+/* 当活跃度面板单独显示时占满整行 */
+.activity-panel:only-child {
+  grid-column: span 12;
+}
+
+.activity-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.activity-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.activity-hour {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  width: 35px;
+  text-align: right;
+}
+
+.activity-bar-bg {
+  flex: 1;
+  height: 12px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.activity-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #ff6b9d, #ffd93d);
+}
+
+.activity-bar-fill.activity-none {
+  background: rgba(255,255,255,0.1);
+}
+
+.activity-bar-fill.activity-low {
+  background: linear-gradient(90deg, #6dd5ed, #88d8b0);
+}
+
+.activity-bar-fill.activity-medium {
+  background: linear-gradient(90deg, #ffd93d, #ffb347);
+}
+
+.activity-bar-fill.activity-high {
+  background: linear-gradient(90deg, #ff6b9d, #ff8fab);
+}
+
+.activity-count {
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+  width: 30px;
+}
+
+.activity-legend {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.activity-empty {
+  text-align: center;
+  padding: 40px;
+  color: rgba(255,255,255,0.4);
+  font-size: 14px;
+}
+
+/* ==================== 章节标题 ==================== */
+.section-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.section-header h2 {
+  font-size: 24px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 4px;
+  position: relative;
+  display: inline-block;
+}
+
+.section-header h2::before,
+.section-header h2::after {
+  content: '◆';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ffd93d;
+  font-size: 12px;
+}
+
+.section-header h2::before {
+  left: -25px;
+}
+
+.section-header h2::after {
+  right: -25px;
+}
+
+/* ==================== 群友称号 ==================== */
+.characters-section {
+  margin-bottom: 30px;
+}
+
+.character-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .character-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.char-card {
+  background: linear-gradient(180deg, rgba(255,107,157,0.15) 0%, rgba(109,213,237,0.1) 100%);
+  border: 2px solid rgba(255,107,157,0.3);
+  border-radius: 20px;
+  padding: 25px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.char-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.char-rank {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #ffd93d, #ff6b9d);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 900;
+  color: #fff;
+}
+
+.char-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 15px;
+  border: 3px solid #ff6b9d;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.1);
+  font-size: 36px;
+  box-shadow: 0 0 20px rgba(255,107,157,0.3);
+}
+
+.char-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.char-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.char-title {
+  font-size: 14px;
+  color: #ffd93d;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-shadow: 0 0 10px rgba(255,217,61,0.5);
+}
+
+.char-mbti {
+  display: inline-block;
+  background: rgba(109,213,237,0.2);
+  border: 1px solid #6dd5ed;
+  color: #6dd5ed;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.char-reason {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.5;
+}
+
+/* ==================== 群圣经 ==================== */
+.quotes-section {
+  margin-bottom: 30px;
+}
+
+.quote-bubble {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 20px 25px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.quote-bubble::before {
+  content: '"';
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  font-size: 60px;
+  color: rgba(255,107,157,0.3);
+  font-family: Georgia, serif;
+  line-height: 1;
+}
+
+.quote-text {
+  font-size: 16px;
+  color: #fff;
+  line-height: 1.8;
+  padding-left: 40px;
+  margin-bottom: 15px;
+  font-style: italic;
+}
+
+.quote-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 40px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.quote-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.quote-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #ff6b9d;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.1);
+  font-size: 18px;
+}
+
+.quote-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.quote-name {
+  font-size: 14px;
+  color: #ff6b9d;
+  font-weight: 600;
+}
+
+.quote-reason {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.05);
+  padding: 8px 15px;
+  border-radius: 20px;
+  max-width: 60%;
+}
+
+/* ==================== 页脚 ==================== */
+.footer {
+  text-align: center;
+  padding: 30px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.4);
+  font-size: 12px;
+}
+
+.footer p {
+  margin: 5px 0;
+}
+
+.footer-brand {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 2px;
+  margin-top: 10px;
+}
+
+/* ==================== 移动端适配 ==================== */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .hero-title {
+    font-size: 32px;
+  }
+
+  .hero-title::before,
+  .hero-title::after {
+    display: none;
+  }
+
+  .stats-banner {
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    flex: 1 1 45%;
+    border-radius: 10px !important;
+    margin: 5px;
+  }
+
+  .stat-num {
+    font-size: 24px;
+  }
+
+  .manga-grid {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topics-panel,
+  .activity-panel {
+    grid-column: span 12;
+  }
+
+  .character-cards {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .char-card {
+    padding: 15px 10px;
+  }
+
+  .char-avatar {
+    width: 60px;
+    height: 60px;
+  }
+
+  .section-header h2 {
+    font-size: 20px;
+  }
+
+  .quote-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .quote-reason {
+    max-width: 100%;
+  }
+}

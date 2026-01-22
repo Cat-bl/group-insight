@@ -1,0 +1,535 @@
+/* 像素游戏风格模板 - Pixel Game Style */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'VT323', monospace;
+  background: #1a1a2e;
+  color: #eee;
+  min-height: 100vh;
+  padding: 20px;
+  image-rendering: pixelated;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* 像素边框效果 */
+.pixel-border {
+  border: 4px solid #00fff5;
+  box-shadow: 0 0 0 4px #1a1a2e, 0 0 0 8px #ff00ff, inset 0 0 20px rgba(0, 255, 245, 0.1);
+  background: #0d0d1a;
+}
+
+/* ==================== 头部 ==================== */
+.header {
+  text-align: center;
+  padding: 30px 20px;
+  position: relative;
+}
+
+/* 扫描线效果 */
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.3) 2px, rgba(0, 0, 0, 0.3) 4px);
+  pointer-events: none;
+}
+
+.title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 24px;
+  color: #00fff5;
+  text-shadow: 3px 3px 0 #ff00ff, -1px -1px 0 #ff00ff, 0 0 20px #00fff5, 0 0 30px #00fff5;
+  margin-bottom: 15px;
+  position: relative;
+  z-index: 1;
+}
+
+.subtitle {
+  font-family: 'VT323', monospace;
+  font-size: 28px;
+  color: #ffff00;
+  text-shadow: 0 0 10px #ffff00;
+  position: relative;
+  z-index: 1;
+}
+
+.date-badge {
+  margin-top: 15px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  color: #00ff00;
+  text-shadow: 0 0 8px #00ff00;
+  position: relative;
+  z-index: 1;
+}
+
+/* ==================== 统计卡片 ==================== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
+  padding: 20px;
+  margin: 20px;
+}
+
+.stat-card {
+  background: #0d0d1a;
+  border: 3px solid #00fff5;
+  padding: 15px;
+  text-align: center;
+}
+
+.stat-label {
+  font-family: 'VT323', monospace;
+  font-size: 20px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 18px;
+  color: #ffff00;
+  text-shadow: 0 0 8px #ffff00;
+}
+
+.stat-bar {
+  height: 8px;
+  background: #333;
+  margin-top: 10px;
+  position: relative;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ff00, #00fff5);
+  box-shadow: 0 0 8px #00fff5;
+}
+
+/* ==================== 章节通用 ==================== */
+.section {
+  margin: 20px;
+  padding: 20px;
+  background: #0d0d1a;
+  border: 3px solid #ff00ff;
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+}
+
+.section-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 22px;
+  color: #ff00ff;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-shadow: 0 0 10px #ff00ff;
+}
+
+.section-title::before {
+  content: '>';
+}
+
+/* ==================== 今日话题 ==================== */
+.quest-item {
+  background: #1a1a2e;
+  border: 2px solid #00fff5;
+  padding: 12px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.quest-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #00ff00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  box-shadow: 0 0 5px #00ff00;
+}
+
+.quest-checkbox::after {
+  content: '✓';
+  color: #00ff00;
+  font-size: 14px;
+  text-shadow: 0 0 5px #00ff00;
+}
+
+.quest-title {
+  font-family: 'VT323', monospace;
+  font-size: 24px;
+  color: #00fff5;
+  margin-bottom: 5px;
+  text-shadow: 0 0 5px #00fff5;
+}
+
+.quest-detail {
+  font-size: 18px;
+  color: #aaa;
+  line-height: 1.5;
+}
+
+.quest-contributors {
+  font-size: 16px;
+  color: #888;
+  margin-top: 8px;
+}
+
+/* ==================== 群友称号 ==================== */
+.user-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+@media (max-width: 600px) {
+  .user-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.user-card {
+  background: #1a1a2e;
+  border: 3px solid #ffff00;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(255, 255, 0, 0.2);
+}
+
+.user-avatar {
+  width: 60px;
+  height: 60px;
+  border: 3px solid #00fff5;
+  margin: 0 auto 10px;
+  background: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  box-shadow: 0 0 10px #00fff5;
+  overflow: hidden;
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-name {
+  font-family: 'VT323', monospace;
+  font-size: 22px;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.user-title {
+  font-size: 18px;
+  color: #ffff00;
+  margin-bottom: 5px;
+  text-shadow: 0 0 5px #ffff00;
+}
+
+.user-mbti {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  color: #00ff00;
+  background: #0d0d1a;
+  padding: 4px 10px;
+  display: inline-block;
+  text-shadow: 0 0 5px #00ff00;
+}
+
+.user-reason {
+  font-size: 14px;
+  color: #888;
+  margin-top: 8px;
+  line-height: 1.4;
+}
+
+/* ==================== 群圣经 ==================== */
+.quote-card {
+  background: #0d0d1a;
+  border: 3px solid #00fff5;
+  padding: 20px;
+  margin-bottom: 15px;
+  position: relative;
+  box-shadow: 0 0 10px rgba(0, 255, 245, 0.2);
+}
+
+.quote-card::before {
+  content: '▼';
+  position: absolute;
+  bottom: -15px;
+  left: 50px;
+  color: #00fff5;
+  font-size: 20px;
+  text-shadow: 0 0 5px #00fff5;
+}
+
+.quote-text {
+  font-size: 20px;
+  color: #fff;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.quote-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quote-avatar {
+  width: 36px;
+  height: 36px;
+  border: 2px solid #ff00ff;
+  background: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 0 8px #ff00ff;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.quote-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.quote-name {
+  font-family: 'VT323', monospace;
+  font-size: 20px;
+  color: #ff00ff;
+  text-shadow: 0 0 5px #ff00ff;
+}
+
+.quote-reason {
+  font-size: 14px;
+  color: #888;
+  margin-top: 10px;
+  padding-left: 46px;
+}
+
+/* ==================== 活跃度图表 ==================== */
+.activity-chart {
+  margin: 20px;
+  padding: 20px;
+  background: #0d0d1a;
+  border: 3px solid #00fff5;
+  box-shadow: 0 0 15px rgba(0, 255, 245, 0.2);
+}
+
+.activity-chart-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+  color: #00fff5;
+  text-shadow: 0 0 8px #00fff5;
+}
+
+.peak-indicator {
+  font-size: 10px;
+  background: rgba(255, 0, 255, 0.3);
+  padding: 4px 10px;
+  border: 1px solid #ff00ff;
+}
+
+.activity-chart-container {
+  position: relative;
+  height: 120px;
+  margin-bottom: 10px;
+  padding: 10px 5px;
+  background: rgba(0, 255, 245, 0.05);
+  border: 1px solid #333;
+}
+
+.activity-bars {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 100%;
+}
+
+.activity-hour {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 1px;
+}
+
+.activity-bar-container {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.activity-bar {
+  width: 90%;
+  min-height: 2px;
+  border-radius: 2px 2px 0 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+}
+
+.activity-bar.activity-none {
+  background: #333;
+}
+
+.activity-bar.activity-low {
+  background: #00ff00;
+  box-shadow: 0 0 5px #00ff00;
+}
+
+.activity-bar.activity-medium {
+  background: #ffff00;
+  box-shadow: 0 0 5px #ffff00;
+}
+
+.activity-bar.activity-high {
+  background: #ff00ff;
+  box-shadow: 0 0 8px #ff00ff;
+}
+
+.activity-hour.peak .activity-bar {
+  box-shadow: 0 0 15px #00fff5;
+  border: 1px solid #00fff5;
+}
+
+.activity-count {
+  font-size: 8px;
+  color: #fff;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  padding: 1px 0;
+}
+
+.activity-label {
+  margin-top: 5px;
+  font-size: 10px;
+  color: #888;
+  flex-shrink: 0;
+  height: 15px;
+  line-height: 15px;
+}
+
+.activity-legend {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #888;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+}
+
+.activity-empty {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-size: 16px;
+}
+
+/* ==================== 页脚 ==================== */
+.footer {
+  text-align: center;
+  padding: 30px;
+  margin-top: 20px;
+}
+
+.footer-text {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.score {
+  font-family: 'VT323', monospace;
+  font-size: 22px;
+  color: #ffff00;
+  text-shadow: 0 0 8px #ffff00;
+}
+
+.footer p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+/* ==================== 移动端适配 ==================== */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .subtitle {
+    font-size: 22px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 10px;
+    margin: 10px;
+  }
+
+  .section {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .section-title {
+    font-size: 16px;
+  }
+
+  .user-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+}

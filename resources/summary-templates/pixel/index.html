@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>群聊日报</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{templateDir}}style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 头部 -->
+    <div class="pixel-border">
+      <div class="header">
+        <div class="title">群聊日报</div>
+        <div class="subtitle">- 今日群聊精彩回顾 -</div>
+        <div class="date-badge">存档: {{dateRange}}</div>
+      </div>
+    </div>
+
+    <!-- 基础统计 -->
+    <div class="stats-grid">
+      <div class="stat-card pixel-border">
+        <div class="stat-label">消息数</div>
+        <div class="stat-value">{{totalMessages}}</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width: 75%;"></div></div>
+      </div>
+      <div class="stat-card pixel-border">
+        <div class="stat-label">参与者</div>
+        <div class="stat-value">{{totalUsers}}</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width: 60%;"></div></div>
+      </div>
+      <div class="stat-card pixel-border">
+        <div class="stat-label">字符数</div>
+        <div class="stat-value">{{totalChars}}</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width: 85%;"></div></div>
+      </div>
+      <div class="stat-card pixel-border">
+        <div class="stat-label">表情数</div>
+        <div class="stat-value">{{totalEmojis}}</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width: 45%;"></div></div>
+      </div>
+      {{if totalLinks > 0}}
+      <div class="stat-card pixel-border">
+        <div class="stat-label">分享链接</div>
+        <div class="stat-value">{{totalLinks}}</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width: 30%;"></div></div>
+      </div>
+      {{/if}}
+      {{if totalVideos > 0}}
+      <div class="stat-card pixel-border">
+        <div class="stat-label">视频数量</div>
+        <div class="stat-value">{{totalVideos}}</div>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width: 25%;"></div></div>
+      </div>
+      {{/if}}
+    </div>
+
+    <!-- 活跃度图表 -->
+    {{if enableActivityChart && activityChart}}
+    <div class="activity-chart pixel-border">
+      <div class="activity-chart-title">
+        <span>> 24小时活跃度</span>
+        <span class="peak-indicator">峰值: {{activityChart.peakHour}}:00 ({{activityChart.peakCount}}条)</span>
+      </div>
+      <div class="activity-chart-container">
+        <div class="activity-bars">
+          {{each activityChart.hours hourData}}
+          <div class="activity-hour {{hourData.isPeak ? 'peak' : ''}}">
+            <div class="activity-bar-container">
+              <div class="activity-bar activity-{{hourData.activityLevel}}" style="height: {{hourData.heightPercent}}%;">
+                {{if hourData.count > 0}}
+                <span class="activity-count">{{hourData.count}}</span>
+                {{/if}}
+              </div>
+            </div>
+            <div class="activity-label">{{hourData.hour}}</div>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+      <div class="activity-legend">
+        <div class="legend-item">
+          <span class="legend-color" style="background: #ff00ff;"></span>
+          <span>高活跃</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: #ffff00;"></span>
+          <span>中活跃</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: #00ff00;"></span>
+          <span>低活跃</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: #333;"></span>
+          <span>无消息</span>
+        </div>
+      </div>
+    </div>
+    {{else enableActivityChart}}
+    <div class="activity-chart pixel-border">
+      <div class="activity-chart-title">
+        <span>> 24小时活跃度</span>
+      </div>
+      <div class="activity-empty">
+        <p>暂无数据</p>
+      </div>
+    </div>
+    {{/if}}
+
+    <!-- 今日话题 -->
+    {{if topics && topics.length > 0}}
+    <div class="section pixel-border">
+      <div class="section-title">今日话题</div>
+      {{each topics topic index}}
+      <div class="quest-item">
+        <div class="quest-checkbox"></div>
+        <div>
+          <div class="quest-title">{{topic.topic}}</div>
+          <div class="quest-detail">{{topic.detail}}</div>
+          {{if topic.contributors && topic.contributors.length > 0}}
+          <div class="quest-contributors">
+            参与者: {{each topic.contributors contributor contributorIndex}}{{if contributorIndex > 0}}、{{/if}}{{contributor.nickname}}{{/each}}
+          </div>
+          {{/if}}
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    <!-- 群友称号 -->
+    {{if userTitles && userTitles.length > 0}}
+    <div class="section pixel-border">
+      <div class="section-title">群友称号</div>
+      <div class="user-grid">
+        {{each userTitles item}}
+        <div class="user-card">
+          <div class="user-avatar">
+            {{if item.user_id}}
+            <img src="https://q1.qlogo.cn/g?b=qq&nk={{item.user_id}}&s=100" alt="{{item.user}}" onerror="this.style.display='none'">
+            {{else}}
+            👤
+            {{/if}}
+          </div>
+          <div class="user-name">{{item.user}}</div>
+          <div class="user-title">{{item.title}}</div>
+          <div class="user-mbti">{{item.mbti}}</div>
+          {{if item.reason}}
+          <div class="user-reason">{{item.reason}}</div>
+          {{/if}}
+        </div>
+        {{/each}}
+      </div>
+    </div>
+    {{/if}}
+
+    <!-- 群圣经 -->
+    {{if goldenQuotes && goldenQuotes.length > 0}}
+    <div class="section pixel-border">
+      <div class="section-title">群圣经</div>
+      {{each goldenQuotes quote index}}
+      <div class="quote-card">
+        <div class="quote-text">"{{quote.quote}}"</div>
+        <div class="quote-author">
+          <div class="quote-avatar">
+            {{if quote.sender.user_id}}
+            <img src="https://q1.qlogo.cn/g?b=qq&nk={{quote.sender.user_id}}&s=100" alt="{{quote.sender.nickname}}" onerror="this.style.display='none'">
+            {{else}}
+            👤
+            {{/if}}
+          </div>
+          <div class="quote-name">{{quote.sender.nickname}}</div>
+        </div>
+        {{if quote.reason}}
+        <div class="quote-reason">{{quote.reason}}</div>
+        {{/if}}
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    <!-- 页脚 -->
+    <div class="footer">
+      <div class="footer-text">- GAME OVER -</div>
+      {{if tokenUsage}}
+      <div class="score">TOKEN: {{tokenUsage.total}}</div>
+      {{/if}}
+      <p>报告生成时间: {{createTime}}</p>
+      <div class="footer-text" style="margin-top: 15px;">TRSS-Yunzai × Group-Insight</div>
+    </div>
+  </div>
+</body>
+</html>

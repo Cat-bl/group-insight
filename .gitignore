@@ -1,0 +1,9 @@
+/node_modules
+/config/config.yaml
+.DS_Store
+/docs
+/*.md
+!/README.md
+/scripts
+stopwords.txt
+userdict.txt

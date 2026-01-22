@@ -1,0 +1,183 @@
+# 群聊信息管理插件配置文件
+
+# 配置文件版本号（请勿手动修改）
+configVersion: 5
+
+groupManager:
+  # 消息保留天数
+  retentionDays: 7
+
+  # 艾特记录保留时间（小时）
+  atRetentionHours: 24
+
+  # 艾特上下文消息数量（记录@消息前后该发起人的N条消息）
+  contextMessageCount: 1
+
+  # 等待下一条消息的超时时间（秒）
+  # 当收到纯@时，最多等待这么长时间来收集发送者的下一条消息
+  nextMessageTimeout: 300
+
+  # AI 配置
+  ai:
+    # API Key (请在 config/config/group-insight.yaml 中配置)
+    # 支持所有兼容 OpenAI API 格式的服务商:
+    apiKey: ''
+
+    # 模型名称
+    model: 'gpt-4.1'
+
+    # OpenAI: https://api.openai.com/v1
+    baseURL: ''
+
+    # 超时时间（毫秒）
+    timeout: 60000
+
+    # 最大 Token 数
+    maxTokens: 20000
+
+    # 每次总结最多处理的消息数量
+    maxMessages: 1000
+
+    # LLM 请求超时（秒）
+    llm_timeout: 100
+
+    # LLM 重试次数
+    llm_retries: 2
+
+    # 重试退避时间（秒）
+    llm_backoff: 2
+
+  # 高级 AI 分析配置
+  analysis:
+    # 话题分析
+    topic:
+      # 是否启用话题分析
+      enabled: true
+      # 话题数量不再限制，AI 将根据实际内容返回所有有意义的话题
+
+    # 金句提取
+    goldenQuote:
+      # 是否启用金句提取
+      enabled: true
+      # 最多提取金句数
+      max_golden_quotes: 5
+      # 金句最短长度
+      min_quote_length: 5
+      # 金句最长长度
+      max_quote_length: 100
+
+    # 用户称号
+    userTitle:
+      # 是否启用用户称号
+      enabled: true
+      # 最多分配称号数
+      max_user_titles: 9
+      # 获得称号的最少消息数
+      min_messages_for_title: 5
+
+    # 活跃度可视化
+    activity:
+      # 是否启用活跃度图表
+      enabled: true
+
+    # 最少消息数阈值（少于此数不执行 AI 分析）
+    min_messages_threshold: 20
+
+  # 统计配置
+  statistics:
+    # 夜间时段定义
+    night_start_hour: 0
+    night_end_hour: 6
+
+  # 词云配置
+  wordCloud:
+    # 最多显示词数
+    maxWords: 100
+
+    # 最短词长度
+    minLength: 2
+
+    # 最小词频
+    minFrequency: 2
+
+    # 词性过滤强度（智能过滤停顿词、语气词等无意义词汇）
+    # loose - 宽松：仅过滤助词(的/了/着)和语气词(啊/吗/呢)
+    # standard - 标准：+ 副词(很/太)、连词(和/或)、代词(我/你) [推荐]
+    # strict - 严格：+ 量词(个/些)、时间词(现在/刚才)、方位词(上/下)、数词
+    filterStrength: standard
+
+    # 关键词提取方式
+    # frequency - 词频统计：简单直接，高频词排在前面
+    # tfidf - TF-IDF 算法：突出具有区分性的词汇，降低普遍出现的词权重
+    extractMethod: frequency
+
+    # 画布尺寸（优化后词语更大更密集，使用标准尺寸）
+    width: 1200
+    height: 800
+
+    # 背景颜色
+    backgroundColor: '#ffffff'
+
+    # 渲染质量配置
+    render:
+      # 图片格式：jpeg 或 png（png 无损但文件更大）
+      imgType: 'png'
+      # JPEG 质量（1-100，仅 jpeg 格式有效）
+      quality: 100
+
+  # 消息收集配置
+  messageCollection:
+    # 是否启用消息收集
+    enabled: true
+
+    # 是否收集图片
+    collectImages: true
+
+    # 是否收集表情（必须开启才能统计表情数量）
+    collectFaces: true
+
+    # 是否收集链接分享（B站/新闻分享卡片、小程序等）
+    collectLinks: true
+
+    # 是否收集视频
+    collectVideos: true
+
+    # 最大消息长度（超过将被截断）
+    maxMessageLength: 500
+
+  # 定时总结配置
+  schedule:
+    # 是否启用定时总结
+    enabled: false
+
+    # 白名单群列表（仅这些群会启用定时总结，为空则不启用）
+    # 示例: [123456789, 987654321]  （群号使用数字类型）
+    whitelist: []
+
+    # 最小消息数阈值（消息少于此数量时跳过总结）
+    minMessages: 99
+
+    # 并发数（同时处理的群数量）
+    concurrency: 3
+
+    # 冷却时长（分钟）- 防止频繁生成报告
+    # 普通用户触发后该群将进入冷却期，冷却期内再次触发将返回缓存的报告
+    # 主人和定时任务不受此限制
+    cooldownMinutes: 60
+
+    # 注意：定时任务已修改为每天23:59执行 (cron: '59 23 * * *')
+    # 如需修改执行时间，请直接编辑 apps/report.js 中的 this.task.cron
+
+  # 总结功能配置
+  summary:
+    # 模板选择（可选值：default 或 scrapbook）
+    # default - 现代科技风格
+    # scrapbook - 手账风格
+    template: 'default'
+    
+    # 渲染质量配置
+    render:
+      # 图片格式：jpeg 或 png（png 无损但文件更大）
+      imgType: 'png'
+      # JPEG 质量（1-100，仅 jpeg 格式有效）
+      quality: 100
