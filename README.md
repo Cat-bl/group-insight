@@ -1,3 +1,8 @@
+# 自用插件留存，原仓库：https://github.com/KBVsent/group-insight
+
+## 基于原仓库修复了使用部分中转站api代码报错问题，新增了几种渲染模板
+
+
 # 群聊洞见插件 (Group Insight)
 
 ![Banner](https://upload.cc/i1/2025/11/21/q4KxA8.jpeg)
