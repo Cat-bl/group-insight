@@ -607,6 +607,239 @@ body {
     opacity: 0.8;
 }
 
+/* ==================== 8. 今日氛围 ==================== */
+.mood-section {
+    grid-column: span 12;
+    margin-top: 20px;
+}
+
+.mood-sticker {
+    background: var(--color-green);
+    padding: 25px;
+    border-radius: 15px;
+    border: 2px solid var(--ink-primary);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.mood-sticker.mood-positive {
+    background: var(--color-green);
+}
+
+.mood-sticker.mood-negative {
+    background: var(--color-pink);
+}
+
+.mood-sticker.mood-neutral {
+    background: var(--color-yellow);
+}
+
+.mood-emoji {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.mood-info {
+    width: 100%;
+    max-width: 300px;
+}
+
+.mood-label {
+    font-family: var(--font-title);
+    font-size: 1.5rem;
+    color: var(--ink-primary);
+    margin-bottom: 10px;
+}
+
+.mood-score-bar {
+    height: 12px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--ink-secondary);
+}
+
+.mood-score-fill {
+    height: 100%;
+    background: var(--accent-orange);
+    border-radius: 6px;
+}
+
+.mood-score-text {
+    font-family: var(--font-hand);
+    font-size: 1.1rem;
+    color: var(--ink-secondary);
+    margin-top: 5px;
+}
+
+.mood-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.mood-keyword {
+    background: #fff;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-family: var(--font-hand);
+    font-size: 0.95rem;
+    color: var(--ink-primary);
+    border: 1px solid var(--ink-secondary);
+}
+
+.mood-summary {
+    font-family: var(--font-hand);
+    font-size: 1.1rem;
+    color: var(--ink-primary);
+    margin-top: 15px;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    border-left: 3px solid var(--accent-orange);
+}
+
+/* ==================== 9. 趣味榜单 ==================== */
+.fun-section {
+    grid-column: span 12;
+    margin-top: 20px;
+}
+
+.fun-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.fun-stamp {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid var(--ink-primary);
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.fun-stamp:hover {
+    transform: scale(1.05) rotate(0deg) !important;
+}
+
+.fun-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.fun-title {
+    font-family: var(--font-hand);
+    font-size: 0.9rem;
+    color: var(--ink-secondary);
+    margin-bottom: 5px;
+}
+
+.fun-user {
+    font-family: var(--font-title);
+    font-size: 1rem;
+    color: var(--ink-primary);
+    margin-bottom: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.fun-value {
+    font-family: var(--font-hand);
+    font-size: 0.85rem;
+    color: var(--accent-orange);
+}
+
+.cp-sticker {
+    background: var(--color-pink);
+    padding: 20px;
+    border-radius: 15px;
+    border: 2px solid var(--ink-primary);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.cp-title {
+    font-family: var(--font-title);
+    font-size: 1.2rem;
+    color: var(--ink-primary);
+    margin-bottom: 10px;
+}
+
+.cp-users {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.cp-user {
+    font-family: var(--font-title);
+    font-size: 1.1rem;
+    color: var(--ink-primary);
+}
+
+.cp-heart {
+    font-size: 1.5rem;
+    animation: heartbeat 1s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.cp-count {
+    font-family: var(--font-hand);
+    font-size: 0.95rem;
+    color: var(--ink-secondary);
+}
+
+.repeat-sticker {
+    background: var(--color-purple);
+    padding: 20px;
+    border-radius: 15px;
+    border: 2px solid var(--ink-primary);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.repeat-title {
+    font-family: var(--font-title);
+    font-size: 1.1rem;
+    color: var(--ink-primary);
+    margin-bottom: 10px;
+}
+
+.repeat-msg {
+    font-family: var(--font-hand);
+    font-size: 1.1rem;
+    color: var(--ink-primary);
+    font-style: italic;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+}
+
+.repeat-users {
+    font-family: var(--font-hand);
+    font-size: 0.9rem;
+    color: var(--ink-secondary);
+    line-height: 1.6;
+}
+
 @media (max-width: 768px) {
     .grid-layout {
         display: flex;

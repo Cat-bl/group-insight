@@ -12,7 +12,8 @@ import {
   getActivityVisualizer,
   getTopicAnalyzer,
   getGoldenQuoteAnalyzer,
-  getUserTitleAnalyzer
+  getUserTitleAnalyzer,
+  getMoodAnalyzer
 } from '../components/index.js'
 import { RESOURCES_DIR, getSummaryTemplatePath, getSummaryTemplateDir } from '#paths'
 import { logger } from '#lib'
@@ -77,8 +78,10 @@ export class ReportPlugin extends plugin {
       if (config?.analysis?.topic?.enabled !== false) enabledFeatures.push('话题分析')
       if (config?.analysis?.goldenQuote?.enabled !== false) enabledFeatures.push('金句提取')
       if (config?.analysis?.userTitle?.enabled !== false) enabledFeatures.push('用户称号')
+      if (config?.analysis?.mood?.enabled !== false) enabledFeatures.push('情绪分析')
     }
     if (config?.analysis?.activity?.enabled !== false) enabledFeatures.push('活跃度图表')
+    if (config?.analysis?.funRankings?.enabled !== false) enabledFeatures.push('趣味榜单')
 
     if (enabledFeatures.length > 0) {
       logger.info(`[报告] 增强分析功能已启用: ${enabledFeatures.join('、')}`)
@@ -772,11 +775,12 @@ export class ReportPlugin extends plugin {
 
     try {
       const config = Config.get()
-      const [statisticsService, topicAnalyzer, goldenQuoteAnalyzer, userTitleAnalyzer] = await Promise.all([
+      const [statisticsService, topicAnalyzer, goldenQuoteAnalyzer, userTitleAnalyzer, moodAnalyzer] = await Promise.all([
         getStatisticsService(),
         getTopicAnalyzer(),
         getGoldenQuoteAnalyzer(),
-        getUserTitleAnalyzer()
+        getUserTitleAnalyzer(),
+        getMoodAnalyzer()
       ])
       const maxMessages = config.ai?.maxMessages || 1000
       const contextOverlap = 50 // 上下文重叠消息数
@@ -1033,12 +1037,28 @@ export class ReportPlugin extends plugin {
         }
       }
 
-      // 5. 整合结果
+      // 5. 情绪分析
+      let mood = null
+      let moodUsage = null
+
+      if (config?.analysis?.mood?.enabled !== false && moodAnalyzer) {
+        try {
+          const moodResult = await moodAnalyzer.analyze(messages, stats)
+          mood = moodResult
+          moodUsage = moodResult.usage
+          logger.info(`[报告] 情绪分析完成 - 氛围: ${mood.mood}, 分数: ${mood.score}`)
+        } catch (err) {
+          logger.error(`[报告] 情绪分析失败: ${err}`)
+        }
+      }
+
+      // 6. 整合结果
       const analysisResults = {
         stats,
         topics,
         goldenQuotes,
         userTitles,
+        mood,  // 新增：情绪分析结果
         skipped: false,
         useIncrementalAnalysis, // 标记是否使用了增量分析
         tokenUsage: {
@@ -1049,7 +1069,7 @@ export class ReportPlugin extends plugin {
       }
 
       // 累加 token 使用情况（包括批次缓存的 token）
-      for (const usage of [batchTokenUsage, topicUsage, quoteUsage, titleUsage]) {
+      for (const usage of [batchTokenUsage, topicUsage, quoteUsage, titleUsage, moodUsage]) {
         if (usage && usage.total_tokens > 0) {
           analysisResults.tokenUsage.prompt_tokens += usage.prompt_tokens || 0
           analysisResults.tokenUsage.completion_tokens += usage.completion_tokens || 0
@@ -1074,7 +1094,7 @@ export class ReportPlugin extends plugin {
     try {
       const config = Config.get()
       const activityVisualizer = await getActivityVisualizer()
-      const { stats, topics, goldenQuotes, userTitles } = analysisResults
+      const { stats, topics, goldenQuotes, userTitles, mood } = analysisResults
 
       // 准备活跃度图表数据
       const activityChartData = config?.analysis?.activity?.enabled !== false && activityVisualizer
@@ -1103,6 +1123,14 @@ export class ReportPlugin extends plugin {
         total: options.tokenUsage.total_tokens || 0
       } : null
 
+      // 根据配置决定是否启用趣味榜单
+      const enableFunRankings = config?.analysis?.funRankings?.enabled !== false
+      const funRankings = enableFunRankings ? this.calculateFunRankings(stats) : null
+
+      // 根据配置决定是否启用情绪分析
+      const enableMood = config?.analysis?.mood?.enabled !== false
+      const moodData = enableMood ? mood : null
+
       const templateData = {
         model: options.model || '',
         groupName: options.groupName || '未知群聊',
@@ -1130,6 +1158,12 @@ export class ReportPlugin extends plugin {
         goldenQuotes,
         userTitles,
 
+        // 情绪分析（根据配置控制）
+        mood: moodData,
+
+        // 趣味榜单（根据配置控制）
+        funRankings,
+
         // 元数据 - 使用报告数据中的 savedAt 时间戳
         createTime: analysisResults.savedAt ? moment(analysisResults.savedAt).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
         tokenUsage,
@@ -1151,6 +1185,65 @@ export class ReportPlugin extends plugin {
     } catch (err) {
       logger.error(`[报告] 渲染增强总结失败: ${err}`)
       return null
+    }
+  }
+
+  /**
+   * 计算趣味榜单
+   * @param {Object} stats - 统计数据
+   * @returns {Object} 各榜单数据
+   */
+  calculateFunRankings(stats) {
+    const users = stats.users || []
+    if (users.length === 0) return {}
+
+    // 辅助函数：找出排名第一的用户
+    const findTop = (sortFn, filterFn = () => true) => {
+      const filtered = users.filter(filterFn)
+      if (filtered.length === 0) return null
+      const sorted = [...filtered].sort(sortFn)
+      return sorted[0]
+    }
+
+    return {
+      // 表情包达人 - 发表情最多
+      topEmojiUser: findTop((a, b) => b.emojiCount - a.emojiCount, u => u.emojiCount > 0),
+
+      // 深夜党 - 夜间消息最多
+      topNightUser: findTop((a, b) => b.nightCount - a.nightCount, u => u.nightCount > 0),
+
+      // 早起党 - 早起消息最多
+      topMorningUser: findTop((a, b) => b.morningCount - a.morningCount, u => u.morningCount > 0),
+
+      // @狂魔 - 艾特别人最多
+      topAtUser: findTop((a, b) => b.atCount - a.atCount, u => u.atCount > 0),
+
+      // 人气王 - 被@最多
+      topBeAtUser: findTop((a, b) => b.beAtCount - a.beAtCount, u => u.beAtCount > 0),
+
+      // 问号达人 - 问题最多
+      topQuestionUser: findTop((a, b) => b.questionCount - a.questionCount, u => u.questionCount > 0),
+
+      // 话题终结者 - 发完消息后群最常沉默
+      topSilencer: findTop((a, b) => b.silenceAfterCount - a.silenceAfterCount, u => u.silenceAfterCount > 0),
+
+      // 消息长度王 - 平均消息最长
+      topLengthUser: findTop((a, b) => parseFloat(b.avgLength) - parseFloat(a.avgLength), u => u.messageCount >= 5),
+
+      // 复读机 - 复读次数最多
+      topRepeater: findTop((a, b) => b.repeatCount - a.repeatCount, u => u.repeatCount > 0),
+
+      // 图片达人 - 发图最多
+      topImageUser: findTop((a, b) => b.imageCount - a.imageCount, u => u.imageCount > 0),
+
+      // 潜水冠军 - 消息最少但有发言（至少发过1条）
+      topDiver: findTop((a, b) => a.messageCount - b.messageCount, u => u.messageCount > 0),
+
+      // 群聊CP
+      topCpPair: stats.funStats?.cpPairs?.[0] || null,
+
+      // 最长复读链
+      longestRepeatChain: stats.funStats?.longestRepeatChain || []
     }
   }
 

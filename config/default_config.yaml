@@ -80,6 +80,16 @@ groupManager:
       # 是否启用活跃度图表
       enabled: true
 
+    # 情绪分析
+    mood:
+      # 是否启用群聊情绪氛围分析
+      enabled: true
+
+    # 趣味榜单
+    funRankings:
+      # 是否启用趣味榜单（表情包达人、深夜党等）
+      enabled: true
+
     # 最少消息数阈值（少于此数不执行 AI 分析）
     min_messages_threshold: 20
 

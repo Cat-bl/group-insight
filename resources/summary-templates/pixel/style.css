@@ -479,6 +479,220 @@ body {
   margin-top: 20px;
 }
 
+/* ==================== 今日氛围 ==================== */
+.mood-panel {
+  background: #1a1a2e;
+  border: 2px solid #00ff00;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.mood-panel.mood-positive {
+  border-color: #00ff00;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.mood-panel.mood-negative {
+  border-color: #ff0000;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+}
+
+.mood-panel.mood-neutral {
+  border-color: #ffff00;
+  box-shadow: 0 0 10px rgba(255, 255, 0, 0.3);
+}
+
+.mood-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.mood-emoji {
+  font-size: 48px;
+}
+
+.mood-info {
+  flex: 1;
+}
+
+.mood-label {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 16px;
+  color: #00fff5;
+  text-shadow: 0 0 8px #00fff5;
+  margin-bottom: 10px;
+}
+
+.mood-score-bar {
+  height: 10px;
+  background: #333;
+  margin-bottom: 8px;
+}
+
+.mood-score-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ff00, #00fff5);
+  box-shadow: 0 0 8px #00fff5;
+}
+
+.mood-panel.mood-negative .mood-score-fill {
+  background: linear-gradient(90deg, #ff0000, #ff00ff);
+}
+
+.mood-panel.mood-neutral .mood-score-fill {
+  background: linear-gradient(90deg, #ffff00, #ff00ff);
+}
+
+.mood-score-text {
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  color: #888;
+}
+
+.mood-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.mood-keyword {
+  background: rgba(0, 255, 245, 0.2);
+  border: 1px solid #00fff5;
+  padding: 4px 12px;
+  font-size: 14px;
+  color: #00fff5;
+}
+
+.mood-summary {
+  font-size: 16px;
+  color: #aaa;
+  padding: 10px;
+  background: rgba(0, 255, 245, 0.1);
+  border-left: 3px solid #00fff5;
+}
+
+/* ==================== 趣味榜单 ==================== */
+.fun-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.fun-card {
+  background: #1a1a2e;
+  border: 2px solid #ffff00;
+  padding: 12px;
+  text-align: center;
+  box-shadow: 0 0 8px rgba(255, 255, 0, 0.2);
+}
+
+.fun-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.fun-title {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.fun-user {
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  color: #fff;
+  margin-bottom: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fun-value {
+  font-size: 12px;
+  color: #ffff00;
+  text-shadow: 0 0 5px #ffff00;
+}
+
+.cp-panel {
+  background: linear-gradient(135deg, rgba(255, 0, 255, 0.2), rgba(255, 107, 157, 0.2));
+  border: 2px solid #ff00ff;
+  padding: 15px;
+  text-align: center;
+  margin-bottom: 15px;
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+}
+
+.cp-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  color: #ff00ff;
+  text-shadow: 0 0 8px #ff00ff;
+  margin-bottom: 10px;
+}
+
+.cp-users {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.cp-user {
+  font-family: 'VT323', monospace;
+  font-size: 20px;
+  color: #fff;
+}
+
+.cp-heart {
+  font-size: 24px;
+  animation: pixelPulse 0.5s steps(2) infinite;
+}
+
+@keyframes pixelPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+}
+
+.cp-count {
+  font-size: 14px;
+  color: #ff00ff;
+}
+
+.repeat-panel {
+  background: rgba(0, 255, 245, 0.1);
+  border: 2px solid #00fff5;
+  padding: 15px;
+  text-align: center;
+}
+
+.repeat-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  color: #00fff5;
+  text-shadow: 0 0 8px #00fff5;
+  margin-bottom: 10px;
+}
+
+.repeat-msg {
+  font-size: 16px;
+  color: #fff;
+  font-style: italic;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.repeat-users {
+  font-size: 14px;
+  color: #888;
+  line-height: 1.6;
+}
+
 .footer-text {
   font-family: 'Press Start 2P', cursive;
   font-size: 12px;

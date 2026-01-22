@@ -14,6 +14,7 @@ export {
   getTopicAnalyzer,
   getGoldenQuoteAnalyzer,
   getUserTitleAnalyzer,
+  getMoodAnalyzer,
   reinitializeServices,
   stopAllServices
 } from './Services.js'

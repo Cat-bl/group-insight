@@ -9,6 +9,11 @@ export default class StatisticsService {
     // 夜间时段配置 (默认 0:00-6:00)
     this.nightStartHour = config.night_start_hour || 0
     this.nightEndHour = config.night_end_hour || 6
+    // 早起时段配置 (默认 6:00-8:00)
+    this.morningStartHour = config.morning_start_hour || 6
+    this.morningEndHour = config.morning_end_hour || 8
+    // 话题终结者判定间隔（秒）
+    this.silenceThreshold = config.silence_threshold || 300  // 5分钟
   }
 
   /**
@@ -41,6 +46,14 @@ export default class StatisticsService {
     let totalEmojis = 0
     let totalReplies = 0
     const timestamps = []
+
+    // 新增：趣味统计
+    let lastMessage = null
+    let currentRepeatChain = []
+    const repeatChains = []  // 所有复读链
+    const interactionMap = new Map()  // 用于CP统计: "userA_userB" -> count
+    const beAtMap = new Map()  // 被@统计: userId -> count
+    const silenceAfterMap = new Map()  // 话题终结者统计: userId -> count
 
     // 单次遍历完成所有统计
     for (const msg of messages) {
@@ -96,6 +109,12 @@ export default class StatisticsService {
           nightCount: 0,
           linkCount: 0,
           videoCount: 0,
+          // 新增统计字段
+          morningCount: 0,      // 早起消息数 (6-8点)
+          atCount: 0,           // 发起@次数
+          questionCount: 0,     // 问题数
+          repeatCount: 0,       // 复读次数
+          imageCount: 0,        // 图片数量
           hourlyDistribution: new Array(24).fill(0)
         })
       }
@@ -129,6 +148,62 @@ export default class StatisticsService {
       if (this.isNightHour(hour)) {
         userStat.nightCount++
       }
+
+      // 新增：早起统计 (6-8点)
+      if (this.isMorningHour(hour)) {
+        userStat.morningCount++
+      }
+
+      // 新增：问题统计
+      if (msg.message && (msg.message.includes('?') || msg.message.includes('？'))) {
+        userStat.questionCount++
+      }
+
+      // 新增：图片统计
+      if (msg.images && msg.images.length > 0) {
+        userStat.imageCount += msg.images.length
+      }
+
+      // 新增：@统计
+      if (msg.atUsers && msg.atUsers.length > 0) {
+        userStat.atCount += msg.atUsers.length
+        // 记录被@的人
+        for (const atUserId of msg.atUsers) {
+          beAtMap.set(atUserId, (beAtMap.get(atUserId) || 0) + 1)
+          // CP互动统计
+          const cpKey = this.makeCpKey(userId, atUserId)
+          interactionMap.set(cpKey, (interactionMap.get(cpKey) || 0) + 1)
+        }
+      }
+
+      // 新增：回复互动统计（用于CP）
+      if (msg.hasReply && msg.replyToUserId) {
+        const cpKey = this.makeCpKey(userId, msg.replyToUserId)
+        interactionMap.set(cpKey, (interactionMap.get(cpKey) || 0) + 1)
+      }
+
+      // 新增：复读检测
+      if (lastMessage && msg.message && lastMessage.message === msg.message && lastMessage.user_id !== userId) {
+        userStat.repeatCount++
+        currentRepeatChain.push({ user_id: userId, nickname: msg.nickname, message: msg.message })
+      } else {
+        // 复读链结束，保存
+        if (currentRepeatChain.length >= 2) {
+          repeatChains.push([...currentRepeatChain])
+        }
+        currentRepeatChain = msg.message ? [{ user_id: userId, nickname: msg.nickname, message: msg.message }] : []
+      }
+
+      // 新增：话题终结者检测
+      if (lastMessage && msg.time && lastMessage.time) {
+        const timeDiff = msg.time - lastMessage.time  // 秒
+        if (timeDiff > this.silenceThreshold) {
+          // 上一条消息的发送者是"话题终结者"
+          silenceAfterMap.set(lastMessage.user_id, (silenceAfterMap.get(lastMessage.user_id) || 0) + 1)
+        }
+      }
+
+      lastMessage = msg
     }
 
     // 计算基础统计的派生值
@@ -168,8 +243,25 @@ export default class StatisticsService {
         ? (totalShares / userStat.messageCount).toFixed(2)
         : 0
       userStat.mostActiveHour = this.findPeakHour(userStat.hourlyDistribution)
+      // 新增：被@次数
+      userStat.beAtCount = beAtMap.get(userStat.user_id) || 0
+      // 新增：话题终结次数
+      userStat.silenceAfterCount = silenceAfterMap.get(userStat.user_id) || 0
       userStats.push(userStat)
     }
+
+    // 保存最后一个复读链
+    if (currentRepeatChain.length >= 2) {
+      repeatChains.push([...currentRepeatChain])
+    }
+
+    // 新增：计算CP排行
+    const cpPairs = this.calculateTopCpPairs(interactionMap, userMap, 5)
+
+    // 新增：找出最长复读链
+    const longestRepeatChain = repeatChains.length > 0
+      ? repeatChains.reduce((longest, chain) => chain.length > longest.length ? chain : longest, [])
+      : []
 
     // 计算小时分布统计的派生值
     const peakHour = this.findPeakHour(hourlyCount)
@@ -203,7 +295,13 @@ export default class StatisticsService {
       emoji: emojiStats,
       links: linkStatsOutput,
       videos: totalVideos,
-      topUsers: this.rankUsers(userStats)
+      topUsers: this.rankUsers(userStats),
+      // 新增：趣味统计
+      funStats: {
+        repeatChains,
+        longestRepeatChain,
+        cpPairs
+      }
     }
   }
 
@@ -227,6 +325,46 @@ export default class StatisticsService {
    */
   isNightHour(hour) {
     return hour >= this.nightStartHour && hour < this.nightEndHour
+  }
+
+  /**
+   * 判断是否是早起时段
+   * @param {number} hour - 小时 (0-23)
+   */
+  isMorningHour(hour) {
+    return hour >= this.morningStartHour && hour < this.morningEndHour
+  }
+
+  /**
+   * 生成CP配对的key（确保顺序一致）
+   * @param {string} userA - 用户A的ID
+   * @param {string} userB - 用户B的ID
+   */
+  makeCpKey(userA, userB) {
+    return [userA, userB].sort().join('_')
+  }
+
+  /**
+   * 计算CP排行
+   * @param {Map} interactionMap - 互动统计Map
+   * @param {Map} userMap - 用户信息Map
+   * @param {number} limit - 返回数量限制
+   */
+  calculateTopCpPairs(interactionMap, userMap, limit = 5) {
+    const pairs = []
+    for (const [key, count] of interactionMap.entries()) {
+      const [userA, userB] = key.split('_')
+      const userAInfo = userMap.get(userA)
+      const userBInfo = userMap.get(userB)
+      if (userAInfo && userBInfo && count >= 2) {  // 至少2次互动
+        pairs.push({
+          userA: { user_id: userA, nickname: userAInfo.nickname },
+          userB: { user_id: userB, nickname: userBInfo.nickname },
+          count
+        })
+      }
+    }
+    return pairs.sort((a, b) => b.count - a.count).slice(0, limit)
   }
 
   /**

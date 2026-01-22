@@ -144,6 +144,26 @@ export default [
   },
   {
     component: "Divider",
+    label: "情绪分析"
+  },
+  {
+    field: "groupManager.analysis.mood.enabled",
+    label: "启用情绪分析",
+    helpMessage: "是否启用群聊情绪氛围分析（积极/中性/消极）",
+    component: "Switch"
+  },
+  {
+    component: "Divider",
+    label: "趣味榜单"
+  },
+  {
+    field: "groupManager.analysis.funRankings.enabled",
+    label: "启用趣味榜单",
+    helpMessage: "是否启用趣味榜单（表情包达人、深夜党、早起党、复读机、群聊CP等）",
+    component: "Switch"
+  },
+  {
+    component: "Divider",
     label: "分析阈值"
   },
   {

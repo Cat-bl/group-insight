@@ -192,6 +192,162 @@
             </div>
             {{/if}}
 
+            <!-- 7. 今日氛围 -->
+            {{if mood && mood.mood}}
+            <div class="mood-section">
+                <div class="section-title" style="justify-content: center;">
+                    <svg class="doodle" viewBox="0 0 24 24">
+                        <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+                    </svg>
+                    今日氛围 Mood
+                </div>
+                <div class="mood-sticker mood-{{mood.mood === '积极' ? 'positive' : mood.mood === '消极' ? 'negative' : 'neutral'}}">
+                    <div class="mood-emoji">{{if mood.mood === '积极'}}😊{{else if mood.mood === '消极'}}😔{{else}}😐{{/if}}</div>
+                    <div class="mood-info">
+                        <div class="mood-label">{{mood.mood}}</div>
+                        <div class="mood-score-bar">
+                            <div class="mood-score-fill" style="width: {{mood.score}}%;"></div>
+                        </div>
+                        <div class="mood-score-text">{{mood.score}}分</div>
+                    </div>
+                    {{if mood.keywords && mood.keywords.length > 0}}
+                    <div class="mood-keywords">
+                        {{each mood.keywords keyword}}
+                        <span class="mood-keyword">{{keyword}}</span>
+                        {{/each}}
+                    </div>
+                    {{/if}}
+                    {{if mood.summary}}
+                    <div class="mood-summary">{{mood.summary}}</div>
+                    {{/if}}
+                </div>
+            </div>
+            {{/if}}
+
+            <!-- 8. 趣味榜单 -->
+            {{if funRankings}}
+            <div class="fun-section">
+                <div class="section-title" style="justify-content: center;">
+                    <svg class="doodle" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    趣味榜单 Fun Rankings
+                </div>
+                <div class="fun-grid">
+                    {{if funRankings.topEmojiUser}}
+                    <div class="fun-stamp" style="transform: rotate(-2deg);">
+                        <div class="fun-icon">🎭</div>
+                        <div class="fun-title">表情包达人</div>
+                        <div class="fun-user">{{funRankings.topEmojiUser.nickname}}</div>
+                        <div class="fun-value">{{funRankings.topEmojiUser.emojiCount}} 个表情</div>
+                    </div>
+                    {{/if}}
+                    {{if funRankings.topNightUser}}
+                    <div class="fun-stamp" style="transform: rotate(1deg);">
+                        <div class="fun-icon">🌙</div>
+                        <div class="fun-title">深夜党</div>
+                        <div class="fun-user">{{funRankings.topNightUser.nickname}}</div>
+                        <div class="fun-value">{{funRankings.topNightUser.nightCount}} 条夜间消息</div>
+                    </div>
+                    {{/if}}
+                    {{if funRankings.topMorningUser}}
+                    <div class="fun-stamp" style="transform: rotate(-1deg);">
+                        <div class="fun-icon">🌅</div>
+                        <div class="fun-title">早起党</div>
+                        <div class="fun-user">{{funRankings.topMorningUser.nickname}}</div>
+                        <div class="fun-value">{{funRankings.topMorningUser.morningCount}} 条早间消息</div>
+                    </div>
+                    {{/if}}
+                    {{if funRankings.topAtUser}}
+                    <div class="fun-stamp" style="transform: rotate(2deg);">
+                        <div class="fun-icon">📢</div>
+                        <div class="fun-title">@狂魔</div>
+                        <div class="fun-user">{{funRankings.topAtUser.nickname}}</div>
+                        <div class="fun-value">发起 {{funRankings.topAtUser.atCount}} 次@</div>
+                    </div>
+                    {{/if}}
+                    {{if funRankings.topBeAtUser}}
+                    <div class="fun-stamp" style="transform: rotate(-2deg);">
+                        <div class="fun-icon">🎯</div>
+                        <div class="fun-title">人气王</div>
+                        <div class="fun-user">{{funRankings.topBeAtUser.nickname}}</div>
+                        <div class="fun-value">被@ {{funRankings.topBeAtUser.beAtCount}} 次</div>
+                    </div>
+                    {{/if}}
+                    {{if funRankings.topQuestionUser}}
+                    <div class="fun-stamp" style="transform: rotate(1deg);">
+                        <div class="fun-icon">❓</div>
+                        <div class="fun-title">问号达人</div>
+                        <div class="fun-user">{{funRankings.topQuestionUser.nickname}}</div>
+                        <div class="fun-value">{{funRankings.topQuestionUser.questionCount}} 个问题</div>
+                    </div>
+                    {{/if}}
+                    {{if funRankings.topSilencer}}
+                    <div class="fun-stamp" style="transform: rotate(-1deg);">
+                        <div class="fun-icon">🔇</div>
+                        <div class="fun-title">话题终结者</div>
+                        <div class="fun-user">{{funRankings.topSilencer.nickname}}</div>
+                        <div class="fun-value">终结 {{funRankings.topSilencer.silenceAfterCount}} 次</div>
+                    </div>
+                    {{/if}}
+                    {{if funRankings.topLengthUser}}
+                    <div class="fun-stamp" style="transform: rotate(2deg);">
+                        <div class="fun-icon">📝</div>
+                        <div class="fun-title">长篇大论</div>
+                        <div class="fun-user">{{funRankings.topLengthUser.nickname}}</div>
+                        <div class="fun-value">平均 {{funRankings.topLengthUser.avgLength}} 字/条</div>
+                    </div>
+                    {{/if}}
+                    {{if funRankings.topRepeater}}
+                    <div class="fun-stamp" style="transform: rotate(-2deg);">
+                        <div class="fun-icon">🔁</div>
+                        <div class="fun-title">复读机</div>
+                        <div class="fun-user">{{funRankings.topRepeater.nickname}}</div>
+                        <div class="fun-value">复读 {{funRankings.topRepeater.repeatCount}} 次</div>
+                    </div>
+                    {{/if}}
+                    {{if funRankings.topImageUser}}
+                    <div class="fun-stamp" style="transform: rotate(1deg);">
+                        <div class="fun-icon">🖼️</div>
+                        <div class="fun-title">图片狂魔</div>
+                        <div class="fun-user">{{funRankings.topImageUser.nickname}}</div>
+                        <div class="fun-value">{{funRankings.topImageUser.imageCount}} 张图片</div>
+                    </div>
+                    {{/if}}
+                    {{if funRankings.topDiver}}
+                    <div class="fun-stamp" style="transform: rotate(-1deg);">
+                        <div class="fun-icon">🤿</div>
+                        <div class="fun-title">潜水冠军</div>
+                        <div class="fun-user">{{funRankings.topDiver.nickname}}</div>
+                        <div class="fun-value">仅 {{funRankings.topDiver.messageCount}} 条消息</div>
+                    </div>
+                    {{/if}}
+                </div>
+
+                {{if funRankings.topCpPair}}
+                <div class="cp-sticker">
+                    <div class="cp-title">💕 今日最佳CP</div>
+                    <div class="cp-users">
+                        <span class="cp-user">{{funRankings.topCpPair.userA.nickname}}</span>
+                        <span class="cp-heart">❤️</span>
+                        <span class="cp-user">{{funRankings.topCpPair.userB.nickname}}</span>
+                    </div>
+                    <div class="cp-count">互动 {{funRankings.topCpPair.count}} 次</div>
+                </div>
+                {{/if}}
+
+                {{if funRankings.longestRepeatChain && funRankings.longestRepeatChain.length >= 3}}
+                <div class="repeat-sticker">
+                    <div class="repeat-title">🔄 最长复读链 ({{funRankings.longestRepeatChain.length}}人)</div>
+                    <div class="repeat-msg">"{{funRankings.longestRepeatChain[0].message}}"</div>
+                    <div class="repeat-users">
+                        {{each funRankings.longestRepeatChain item index}}{{if index > 0}} → {{/if}}{{item.nickname}}{{/each}}
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+            {{/if}}
+
         </div>
 
         <!-- Footer -->

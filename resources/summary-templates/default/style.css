@@ -563,6 +563,299 @@ i.fas, i.far, i.fab {
   50% { transform: scale(1); }
 }
 
+/* 情绪分析卡片 */
+.mood-card {
+  padding: 20px;
+  border-radius: 12px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid #22c55e;
+}
+
+.mood-card.mood-positive {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  border-left-color: #22c55e;
+}
+
+.mood-card.mood-negative {
+  background: #fef2f2;
+  border-color: #fecaca;
+  border-left-color: #ef4444;
+}
+
+.mood-card.mood-neutral {
+  background: #fefce8;
+  border-color: #fef08a;
+  border-left-color: #eab308;
+}
+
+.mood-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 12px;
+}
+
+.mood-emoji {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.mood-info {
+  flex: 1;
+}
+
+.mood-label {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.mood-score {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mood-score-bar {
+  flex: 1;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.mood-score-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e, #84cc16);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.mood-card.mood-negative .mood-score-fill {
+  background: linear-gradient(90deg, #ef4444, #f97316);
+}
+
+.mood-card.mood-neutral .mood-score-fill {
+  background: linear-gradient(90deg, #eab308, #f59e0b);
+}
+
+.mood-score-text {
+  font-size: 14px;
+  font-weight: bold;
+  color: #6b7280;
+  min-width: 40px;
+}
+
+.mood-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.mood-keyword {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.mood-summary {
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.6;
+  padding-left: 5px;
+  border-left: 2px solid #d1d5db;
+}
+
+/* 趣味榜单网格 */
+.fun-rankings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.fun-rank-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fun-rank-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.fun-rank-icon {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.fun-rank-title {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.fun-rank-user {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.fun-rank-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #667eea;
+  object-fit: cover;
+}
+
+.fun-rank-user span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fun-rank-value {
+  font-size: 11px;
+  color: #667eea;
+  font-weight: 500;
+}
+
+/* CP卡片 */
+.cp-card {
+  background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+  border: 1px solid #fbcfe8;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.cp-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #db2777;
+  margin-bottom: 12px;
+}
+
+.cp-title i {
+  color: #ec4899;
+}
+
+.cp-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 8px;
+}
+
+.cp-user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.cp-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px solid #ec4899;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
+}
+
+.cp-user span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cp-heart {
+  font-size: 24px;
+  animation: heartPulse 1s ease-in-out infinite;
+}
+
+@keyframes heartPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+.cp-count {
+  font-size: 12px;
+  color: #be185d;
+  font-weight: 500;
+}
+
+/* 复读链卡片 */
+.repeat-chain-card {
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-left: 4px solid #8b5cf6;
+  border-radius: 12px;
+  padding: 15px;
+}
+
+.repeat-chain-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #7c3aed;
+  margin-bottom: 10px;
+}
+
+.repeat-chain-title i {
+  color: #8b5cf6;
+  margin-right: 6px;
+}
+
+.repeat-chain-content {
+  padding-left: 10px;
+}
+
+.repeat-chain-message {
+  font-size: 14px;
+  color: #374151;
+  font-style: italic;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  background: rgba(139, 92, 246, 0.1);
+  border-radius: 8px;
+}
+
+.repeat-chain-users {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.8;
+}
+
+.repeat-user {
+  color: #7c3aed;
+  font-weight: 500;
+}
+
 /* 移动端适配 */
 @media (max-width: 768px) {
   body {

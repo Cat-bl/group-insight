@@ -12,6 +12,7 @@ import ActivityVisualizer from '../services/ActivityVisualizer.js'
 import TopicAnalyzer from '../services/analyzers/TopicAnalyzer.js'
 import GoldenQuoteAnalyzer from '../services/analyzers/GoldenQuoteAnalyzer.js'
 import UserTitleAnalyzer from '../services/analyzers/UserTitleAnalyzer.js'
+import MoodAnalyzer from '../services/analyzers/MoodAnalyzer.js'
 import Config from './Config.js'
 
 /**
@@ -149,6 +150,11 @@ const userTitleAnalyzerManager = SingletonServiceManager.getManager(
   createAnalyzerManagerClass(UserTitleAnalyzer, 'userTitle')
 )
 
+const moodAnalyzerManager = SingletonServiceManager.getManager(
+  'MoodAnalyzer',
+  createAnalyzerManagerClass(MoodAnalyzer, 'mood')
+)
+
 /**
  * 获取消息收集器实例
  * @returns {Promise<MessageCollector|null>}
@@ -224,6 +230,19 @@ export async function getUserTitleAnalyzer() {
     return await userTitleAnalyzerManager.getInstance()
   } catch (error) {
     logger.debug(`用户称号分析器不可用: ${error.message}`)
+    return null
+  }
+}
+
+/**
+ * 获取情绪分析器实例
+ * @returns {Promise<MoodAnalyzer|null>}
+ */
+export async function getMoodAnalyzer() {
+  try {
+    return await moodAnalyzerManager.getInstance()
+  } catch (error) {
+    logger.debug(`情绪分析器不可用: ${error.message}`)
     return null
   }
 }
