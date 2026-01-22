@@ -147,6 +147,7 @@ export default class MessageCollector {
       total: 0       // 总表情数
     }
     let hasReply = false
+    let replyToUserId = null
 
     // 遍历消息段
     for (const msg of e.message) {
@@ -183,6 +184,10 @@ export default class MessageCollector {
         }
       } else if (msg.type === 'reply') {
         hasReply = true
+        // 尝试从 e.source 获取被回复的用户 ID
+        if (e.source?.user_id) {
+          replyToUserId = e.source.user_id
+        }
       } else if (msg.type === 'face') {
         // QQ 原生表情（包括小表情和动画表情）
         if (this.collectFaces) {
@@ -255,6 +260,7 @@ export default class MessageCollector {
       videos,
       faces,
       hasReply,
+      replyToUserId,
       atAll: e.atall || false
     }
   }
@@ -384,6 +390,16 @@ export default class MessageCollector {
     // 保存视频数据
     if (message.videos && message.videos.length > 0) {
       messageData.videos = message.videos
+    }
+
+    // 保存 @ 用户数据（用于 @狂魔、人气王统计）
+    if (message.atUsers && message.atUsers.length > 0) {
+      messageData.atUsers = message.atUsers
+    }
+
+    // 保存回复目标用户 ID（用于 CP 互动统计）
+    if (message.replyToUserId) {
+      messageData.replyToUserId = message.replyToUserId
     }
 
     await this.redisHelper.saveMessage(e.group_id, messageData)
