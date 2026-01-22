@@ -718,9 +718,11 @@ i.fas, i.far, i.fab {
 .fun-rank-avatar {
   width: 24px;
   height: 24px;
+  min-width: 24px;
   border-radius: 50%;
   border: 2px solid #667eea;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .fun-rank-user span {

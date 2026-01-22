@@ -42,7 +42,7 @@ groupManager:
     llm_timeout: 100
 
     # LLM 重试次数
-    llm_retries: 2
+    llm_retries: 5
 
     # 重试退避时间（秒）
     llm_backoff: 2

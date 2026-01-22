@@ -781,10 +781,28 @@ body::before {
 }
 
 .fun-user {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   font-size: 15px;
   font-weight: 700;
   color: #fff;
   margin-bottom: 5px;
+  max-width: 100%;
+}
+
+.fun-avatar {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.3);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.fun-user span {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -818,6 +836,21 @@ body::before {
   justify-content: center;
   gap: 15px;
   margin-bottom: 10px;
+}
+
+.cp-user-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.cp-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,107,157,0.5);
+  object-fit: cover;
 }
 
 .cp-user {

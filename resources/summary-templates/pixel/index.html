@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{templateDir}}style.css">
 </head>
+
 <body>
   <div class="container">
     <!-- 头部 -->
@@ -25,35 +27,47 @@
       <div class="stat-card pixel-border">
         <div class="stat-label">消息数</div>
         <div class="stat-value">{{totalMessages}}</div>
-        <div class="stat-bar"><div class="stat-bar-fill" style="width: 75%;"></div></div>
+        <div class="stat-bar">
+          <div class="stat-bar-fill" style="width: 75%;"></div>
+        </div>
       </div>
       <div class="stat-card pixel-border">
         <div class="stat-label">参与者</div>
         <div class="stat-value">{{totalUsers}}</div>
-        <div class="stat-bar"><div class="stat-bar-fill" style="width: 60%;"></div></div>
+        <div class="stat-bar">
+          <div class="stat-bar-fill" style="width: 60%;"></div>
+        </div>
       </div>
       <div class="stat-card pixel-border">
         <div class="stat-label">字符数</div>
         <div class="stat-value">{{totalChars}}</div>
-        <div class="stat-bar"><div class="stat-bar-fill" style="width: 85%;"></div></div>
+        <div class="stat-bar">
+          <div class="stat-bar-fill" style="width: 85%;"></div>
+        </div>
       </div>
       <div class="stat-card pixel-border">
         <div class="stat-label">表情数</div>
         <div class="stat-value">{{totalEmojis}}</div>
-        <div class="stat-bar"><div class="stat-bar-fill" style="width: 45%;"></div></div>
+        <div class="stat-bar">
+          <div class="stat-bar-fill" style="width: 45%;"></div>
+        </div>
       </div>
       {{if totalLinks > 0}}
       <div class="stat-card pixel-border">
         <div class="stat-label">分享链接</div>
         <div class="stat-value">{{totalLinks}}</div>
-        <div class="stat-bar"><div class="stat-bar-fill" style="width: 30%;"></div></div>
+        <div class="stat-bar">
+          <div class="stat-bar-fill" style="width: 30%;"></div>
+        </div>
       </div>
       {{/if}}
       {{if totalVideos > 0}}
       <div class="stat-card pixel-border">
         <div class="stat-label">视频数量</div>
         <div class="stat-value">{{totalVideos}}</div>
-        <div class="stat-bar"><div class="stat-bar-fill" style="width: 25%;"></div></div>
+        <div class="stat-bar">
+          <div class="stat-bar-fill" style="width: 25%;"></div>
+        </div>
       </div>
       {{/if}}
     </div>
@@ -70,7 +84,8 @@
           {{each activityChart.hours hourData}}
           <div class="activity-hour {{hourData.isPeak ? 'peak' : ''}}">
             <div class="activity-bar-container">
-              <div class="activity-bar activity-{{hourData.activityLevel}}" style="height: {{hourData.heightPercent}}%;">
+              <div class="activity-bar activity-{{hourData.activityLevel}}"
+                style="height: {{hourData.heightPercent}}%;">
                 {{if hourData.count > 0}}
                 <span class="activity-count">{{hourData.count}}</span>
                 {{/if}}
@@ -123,7 +138,8 @@
           <div class="quest-detail">{{topic.detail}}</div>
           {{if topic.contributors && topic.contributors.length > 0}}
           <div class="quest-contributors">
-            参与者: {{each topic.contributors contributor contributorIndex}}{{if contributorIndex > 0}}、{{/if}}{{contributor.nickname}}{{/each}}
+            参与者: {{each topic.contributors contributor contributorIndex}}{{if contributorIndex >
+            0}}、{{/if}}{{contributor.nickname}}{{/each}}
           </div>
           {{/if}}
         </div>
@@ -141,7 +157,8 @@
         <div class="user-card">
           <div class="user-avatar">
             {{if item.user_id}}
-            <img src="https://q1.qlogo.cn/g?b=qq&nk={{item.user_id}}&s=100" alt="{{item.user}}" onerror="this.style.display='none'">
+            <img src="https://q1.qlogo.cn/g?b=qq&nk={{item.user_id}}&s=100" alt="{{item.user}}"
+              onerror="this.style.display='none'">
             {{else}}
             👤
             {{/if}}
@@ -158,28 +175,171 @@
     </div>
     {{/if}}
 
-    <!-- 群圣经 -->
-    {{if goldenQuotes && goldenQuotes.length > 0}}
+    <!-- 趣味榜单 -->
+    {{if funRankings}}
     <div class="section pixel-border">
-      <div class="section-title">群圣经</div>
-      {{each goldenQuotes quote index}}
-      <div class="quote-card">
-        <div class="quote-text">"{{quote.quote}}"</div>
-        <div class="quote-author">
-          <div class="quote-avatar">
-            {{if quote.sender.user_id}}
-            <img src="https://q1.qlogo.cn/g?b=qq&nk={{quote.sender.user_id}}&s=100" alt="{{quote.sender.nickname}}" onerror="this.style.display='none'">
-            {{else}}
-            👤
-            {{/if}}
+      <div class="section-title">趣味榜单</div>
+      <div class="fun-grid">
+        {{if funRankings.topEmojiUser}}
+        <div class="fun-card">
+          <div class="fun-icon">🎭</div>
+          <div class="fun-title">表情包达人</div>
+          <div class="fun-user">
+            <img class="fun-avatar" src="https://q1.qlogo.cn/g?b=qq&nk={{funRankings.topEmojiUser.user_id}}&s=100"
+              onerror="this.style.display='none'">
+            <span>{{funRankings.topEmojiUser.nickname}}</span>
           </div>
-          <div class="quote-name">{{quote.sender.nickname}}</div>
+          <div class="fun-value">{{funRankings.topEmojiUser.emojiCount}} 个表情</div>
         </div>
-        {{if quote.reason}}
-        <div class="quote-reason">{{quote.reason}}</div>
+        {{/if}}
+        {{if funRankings.topNightUser}}
+        <div class="fun-card">
+          <div class="fun-icon">🌙</div>
+          <div class="fun-title">深夜党</div>
+          <div class="fun-user">
+            <img class="fun-avatar" src="https://q1.qlogo.cn/g?b=qq&nk={{funRankings.topNightUser.user_id}}&s=100"
+              onerror="this.style.display='none'">
+            <span>{{funRankings.topNightUser.nickname}}</span>
+          </div>
+          <div class="fun-value">{{funRankings.topNightUser.nightCount}} 条</div>
+        </div>
+        {{/if}}
+        {{if funRankings.topMorningUser}}
+        <div class="fun-card">
+          <div class="fun-icon">🌅</div>
+          <div class="fun-title">早起党</div>
+          <div class="fun-user">
+            <img class="fun-avatar" src="https://q1.qlogo.cn/g?b=qq&nk={{funRankings.topMorningUser.user_id}}&s=100"
+              onerror="this.style.display='none'">
+            <span>{{funRankings.topMorningUser.nickname}}</span>
+          </div>
+          <div class="fun-value">{{funRankings.topMorningUser.morningCount}} 条</div>
+        </div>
+        {{/if}}
+        {{if funRankings.topAtUser}}
+        <div class="fun-card">
+          <div class="fun-icon">📢</div>
+          <div class="fun-title">@狂魔</div>
+          <div class="fun-user">
+            <img class="fun-avatar" src="https://q1.qlogo.cn/g?b=qq&nk={{funRankings.topAtUser.user_id}}&s=100"
+              onerror="this.style.display='none'">
+            <span>{{funRankings.topAtUser.nickname}}</span>
+          </div>
+          <div class="fun-value">{{funRankings.topAtUser.atCount}} 次@</div>
+        </div>
+        {{/if}}
+        {{if funRankings.topBeAtUser}}
+        <div class="fun-card">
+          <div class="fun-icon">🎯</div>
+          <div class="fun-title">人气王</div>
+          <div class="fun-user">
+            <img class="fun-avatar" src="https://q1.qlogo.cn/g?b=qq&nk={{funRankings.topBeAtUser.user_id}}&s=100"
+              onerror="this.style.display='none'">
+            <span>{{funRankings.topBeAtUser.nickname}}</span>
+          </div>
+          <div class="fun-value">被@ {{funRankings.topBeAtUser.beAtCount}} 次</div>
+        </div>
+        {{/if}}
+        {{if funRankings.topQuestionUser}}
+        <div class="fun-card">
+          <div class="fun-icon">❓</div>
+          <div class="fun-title">问号达人</div>
+          <div class="fun-user">
+            <img class="fun-avatar" src="https://q1.qlogo.cn/g?b=qq&nk={{funRankings.topQuestionUser.user_id}}&s=100"
+              onerror="this.style.display='none'">
+            <span>{{funRankings.topQuestionUser.nickname}}</span>
+          </div>
+          <div class="fun-value">{{funRankings.topQuestionUser.questionCount}} 个问题</div>
+        </div>
+        {{/if}}
+        {{if funRankings.topSilencer}}
+        <div class="fun-card">
+          <div class="fun-icon">🔇</div>
+          <div class="fun-title">话题终结者</div>
+          <div class="fun-user">
+            <img class="fun-avatar" src="https://q1.qlogo.cn/g?b=qq&nk={{funRankings.topSilencer.user_id}}&s=100"
+              onerror="this.style.display='none'">
+            <span>{{funRankings.topSilencer.nickname}}</span>
+          </div>
+          <div class="fun-value">终结 {{funRankings.topSilencer.silenceAfterCount}} 次</div>
+        </div>
+        {{/if}}
+        {{if funRankings.topLengthUser}}
+        <div class="fun-card">
+          <div class="fun-icon">📝</div>
+          <div class="fun-title">长篇大论</div>
+          <div class="fun-user">
+            <img class="fun-avatar" src="https://q1.qlogo.cn/g?b=qq&nk={{funRankings.topLengthUser.user_id}}&s=100"
+              onerror="this.style.display='none'">
+            <span>{{funRankings.topLengthUser.nickname}}</span>
+          </div>
+          <div class="fun-value">平均 {{funRankings.topLengthUser.avgLength}} 字</div>
+        </div>
+        {{/if}}
+        {{if funRankings.topRepeater}}
+        <div class="fun-card">
+          <div class="fun-icon">🔁</div>
+          <div class="fun-title">复读机</div>
+          <div class="fun-user">
+            <img class="fun-avatar" src="https://q1.qlogo.cn/g?b=qq&nk={{funRankings.topRepeater.user_id}}&s=100"
+              onerror="this.style.display='none'">
+            <span>{{funRankings.topRepeater.nickname}}</span>
+          </div>
+          <div class="fun-value">复读 {{funRankings.topRepeater.repeatCount}} 次</div>
+        </div>
+        {{/if}}
+        {{if funRankings.topImageUser}}
+        <div class="fun-card">
+          <div class="fun-icon">🖼️</div>
+          <div class="fun-title">图片狂魔</div>
+          <div class="fun-user">
+            <img class="fun-avatar" src="https://q1.qlogo.cn/g?b=qq&nk={{funRankings.topImageUser.user_id}}&s=100"
+              onerror="this.style.display='none'">
+            <span>{{funRankings.topImageUser.nickname}}</span>
+          </div>
+          <div class="fun-value">{{funRankings.topImageUser.imageCount}} 张图片</div>
+        </div>
+        {{/if}}
+        {{if funRankings.topDiver}}
+        <div class="fun-card">
+          <div class="fun-icon">🤿</div>
+          <div class="fun-title">潜水冠军</div>
+          <div class="fun-user">
+            <img class="fun-avatar" src="https://q1.qlogo.cn/g?b=qq&nk={{funRankings.topDiver.user_id}}&s=100"
+              onerror="this.style.display='none'">
+            <span>{{funRankings.topDiver.nickname}}</span>
+          </div>
+          <div class="fun-value">仅 {{funRankings.topDiver.messageCount}} 条</div>
+        </div>
         {{/if}}
       </div>
-      {{/each}}
+      {{if funRankings.topCpPair}}
+      <div class="cp-panel">
+        <div class="cp-title">💕 今日最佳CP</div>
+        <div class="cp-users">
+          <div class="cp-user-wrap">
+            <img class="cp-avatar" src="https://q1.qlogo.cn/g?b=qq&nk={{funRankings.topCpPair.userA.user_id}}&s=100"
+              onerror="this.style.display='none'">
+            <span class="cp-user">{{funRankings.topCpPair.userA.nickname}}</span>
+          </div>
+          <span class="cp-heart">❤️</span>
+          <div class="cp-user-wrap">
+            <img class="cp-avatar" src="https://q1.qlogo.cn/g?b=qq&nk={{funRankings.topCpPair.userB.user_id}}&s=100"
+              onerror="this.style.display='none'">
+            <span class="cp-user">{{funRankings.topCpPair.userB.nickname}}</span>
+          </div>
+        </div>
+        <div class="cp-count">互动 {{funRankings.topCpPair.count}} 次</div>
+      </div>
+      {{/if}}
+      {{if funRankings.longestRepeatChain && funRankings.longestRepeatChain.length >= 3}}
+      <div class="repeat-panel">
+        <div class="repeat-title">🔄 最长复读链 ({{funRankings.longestRepeatChain.length}}人)</div>
+        <div class="repeat-msg">"{{funRankings.longestRepeatChain[0].message}}"</div>
+        <div class="repeat-users">{{each funRankings.longestRepeatChain item index}}{{if index > 0}} →
+          {{/if}}{{item.nickname}}{{/each}}</div>
+      </div>
+      {{/if}}
     </div>
     {{/if}}
 
@@ -192,7 +352,9 @@
           <div class="mood-emoji">{{if mood.mood === '积极'}}😊{{else if mood.mood === '消极'}}😔{{else}}😐{{/if}}</div>
           <div class="mood-info">
             <div class="mood-label">{{mood.mood}}</div>
-            <div class="mood-score-bar"><div class="mood-score-fill" style="width: {{mood.score}}%;"></div></div>
+            <div class="mood-score-bar">
+              <div class="mood-score-fill" style="width: {{mood.score}}%;"></div>
+            </div>
             <div class="mood-score-text">{{mood.score}} / 100</div>
           </div>
         </div>
@@ -210,118 +372,29 @@
     </div>
     {{/if}}
 
-    <!-- 趣味榜单 -->
-    {{if funRankings}}
+    <!-- 群圣经 -->
+    {{if goldenQuotes && goldenQuotes.length > 0}}
     <div class="section pixel-border">
-      <div class="section-title">趣味榜单</div>
-      <div class="fun-grid">
-        {{if funRankings.topEmojiUser}}
-        <div class="fun-card">
-          <div class="fun-icon">🎭</div>
-          <div class="fun-title">表情包达人</div>
-          <div class="fun-user">{{funRankings.topEmojiUser.nickname}}</div>
-          <div class="fun-value">{{funRankings.topEmojiUser.emojiCount}} 个表情</div>
+      <div class="section-title">群圣经</div>
+      {{each goldenQuotes quote index}}
+      <div class="quote-card">
+        <div class="quote-text">"{{quote.quote}}"</div>
+        <div class="quote-author">
+          <div class="quote-avatar">
+            {{if quote.sender.user_id}}
+            <img src="https://q1.qlogo.cn/g?b=qq&nk={{quote.sender.user_id}}&s=100" alt="{{quote.sender.nickname}}"
+              onerror="this.style.display='none'">
+            {{else}}
+            👤
+            {{/if}}
+          </div>
+          <div class="quote-name">{{quote.sender.nickname}}</div>
         </div>
-        {{/if}}
-        {{if funRankings.topNightUser}}
-        <div class="fun-card">
-          <div class="fun-icon">🌙</div>
-          <div class="fun-title">深夜党</div>
-          <div class="fun-user">{{funRankings.topNightUser.nickname}}</div>
-          <div class="fun-value">{{funRankings.topNightUser.nightCount}} 条</div>
-        </div>
-        {{/if}}
-        {{if funRankings.topMorningUser}}
-        <div class="fun-card">
-          <div class="fun-icon">🌅</div>
-          <div class="fun-title">早起党</div>
-          <div class="fun-user">{{funRankings.topMorningUser.nickname}}</div>
-          <div class="fun-value">{{funRankings.topMorningUser.morningCount}} 条</div>
-        </div>
-        {{/if}}
-        {{if funRankings.topAtUser}}
-        <div class="fun-card">
-          <div class="fun-icon">📢</div>
-          <div class="fun-title">@狂魔</div>
-          <div class="fun-user">{{funRankings.topAtUser.nickname}}</div>
-          <div class="fun-value">{{funRankings.topAtUser.atCount}} 次@</div>
-        </div>
-        {{/if}}
-        {{if funRankings.topBeAtUser}}
-        <div class="fun-card">
-          <div class="fun-icon">🎯</div>
-          <div class="fun-title">人气王</div>
-          <div class="fun-user">{{funRankings.topBeAtUser.nickname}}</div>
-          <div class="fun-value">被@ {{funRankings.topBeAtUser.beAtCount}} 次</div>
-        </div>
-        {{/if}}
-        {{if funRankings.topQuestionUser}}
-        <div class="fun-card">
-          <div class="fun-icon">❓</div>
-          <div class="fun-title">问号达人</div>
-          <div class="fun-user">{{funRankings.topQuestionUser.nickname}}</div>
-          <div class="fun-value">{{funRankings.topQuestionUser.questionCount}} 个问题</div>
-        </div>
-        {{/if}}
-        {{if funRankings.topSilencer}}
-        <div class="fun-card">
-          <div class="fun-icon">🔇</div>
-          <div class="fun-title">话题终结者</div>
-          <div class="fun-user">{{funRankings.topSilencer.nickname}}</div>
-          <div class="fun-value">终结 {{funRankings.topSilencer.silenceAfterCount}} 次</div>
-        </div>
-        {{/if}}
-        {{if funRankings.topLengthUser}}
-        <div class="fun-card">
-          <div class="fun-icon">📝</div>
-          <div class="fun-title">长篇大论</div>
-          <div class="fun-user">{{funRankings.topLengthUser.nickname}}</div>
-          <div class="fun-value">平均 {{funRankings.topLengthUser.avgLength}} 字</div>
-        </div>
-        {{/if}}
-        {{if funRankings.topRepeater}}
-        <div class="fun-card">
-          <div class="fun-icon">🔁</div>
-          <div class="fun-title">复读机</div>
-          <div class="fun-user">{{funRankings.topRepeater.nickname}}</div>
-          <div class="fun-value">复读 {{funRankings.topRepeater.repeatCount}} 次</div>
-        </div>
-        {{/if}}
-        {{if funRankings.topImageUser}}
-        <div class="fun-card">
-          <div class="fun-icon">🖼️</div>
-          <div class="fun-title">图片狂魔</div>
-          <div class="fun-user">{{funRankings.topImageUser.nickname}}</div>
-          <div class="fun-value">{{funRankings.topImageUser.imageCount}} 张图片</div>
-        </div>
-        {{/if}}
-        {{if funRankings.topDiver}}
-        <div class="fun-card">
-          <div class="fun-icon">🤿</div>
-          <div class="fun-title">潜水冠军</div>
-          <div class="fun-user">{{funRankings.topDiver.nickname}}</div>
-          <div class="fun-value">仅 {{funRankings.topDiver.messageCount}} 条</div>
-        </div>
+        {{if quote.reason}}
+        <div class="quote-reason">{{quote.reason}}</div>
         {{/if}}
       </div>
-      {{if funRankings.topCpPair}}
-      <div class="cp-panel">
-        <div class="cp-title">💕 今日最佳CP</div>
-        <div class="cp-users">
-          <span class="cp-user">{{funRankings.topCpPair.userA.nickname}}</span>
-          <span class="cp-heart">❤️</span>
-          <span class="cp-user">{{funRankings.topCpPair.userB.nickname}}</span>
-        </div>
-        <div class="cp-count">互动 {{funRankings.topCpPair.count}} 次</div>
-      </div>
-      {{/if}}
-      {{if funRankings.longestRepeatChain && funRankings.longestRepeatChain.length >= 3}}
-      <div class="repeat-panel">
-        <div class="repeat-title">🔄 最长复读链 ({{funRankings.longestRepeatChain.length}}人)</div>
-        <div class="repeat-msg">"{{funRankings.longestRepeatChain[0].message}}"</div>
-        <div class="repeat-users">{{each funRankings.longestRepeatChain item index}}{{if index > 0}} → {{/if}}{{item.nickname}}{{/each}}</div>
-      </div>
-      {{/if}}
+      {{/each}}
     </div>
     {{/if}}
 
@@ -336,4 +409,5 @@
     </div>
   </div>
 </body>
+
 </html>

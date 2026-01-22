@@ -316,6 +316,7 @@ export class ReportPlugin extends plugin {
               topics: analysisResults.topics,
               goldenQuotes: analysisResults.goldenQuotes,
               userTitles: analysisResults.userTitles,
+              mood: analysisResults.mood,
               messageCount: messages.length,
               tokenUsage: analysisResults.tokenUsage
             })
@@ -484,6 +485,7 @@ export class ReportPlugin extends plugin {
             topics: analysisResults.topics,
             goldenQuotes: analysisResults.goldenQuotes,
             userTitles: analysisResults.userTitles,
+            mood: analysisResults.mood,
             messageCount: messages.length,
             tokenUsage: analysisResults.tokenUsage
           })
@@ -492,11 +494,10 @@ export class ReportPlugin extends plugin {
 
           logger.mark(`[报告] 用户触发今天报告生成成功 - 群 ${e.group_id}, 消息数: ${messages.length}`)
 
-          const savedReport = await messageCollector.redisHelper.getReport(e.group_id, queryDate)
-          const img = await this.renderReport(savedReport || analysisResults, {
+          const img = await this.renderReport(analysisResults, {
             groupName,
             model: aiService?.model || '',
-            tokenUsage: (savedReport || analysisResults).tokenUsage,
+            tokenUsage: analysisResults.tokenUsage,
             date: queryDate
           })
 
@@ -578,6 +579,7 @@ export class ReportPlugin extends plugin {
           topics: analysisResults.topics,
           goldenQuotes: analysisResults.goldenQuotes,
           userTitles: analysisResults.userTitles,
+          mood: analysisResults.mood,
           messageCount: messages.length,
           tokenUsage: analysisResults.tokenUsage
         })
@@ -586,11 +588,10 @@ export class ReportPlugin extends plugin {
 
         logger.mark(`[报告] 用户触发${dateLabel}报告生成成功 - 群 ${e.group_id}, 消息数: ${messages.length}`)
 
-        const savedReport = await messageCollector.redisHelper.getReport(e.group_id, queryDate)
-        const img = await this.renderReport(savedReport || analysisResults, {
+        const img = await this.renderReport(analysisResults, {
           groupName,
           model: aiService?.model || '',
-          tokenUsage: (savedReport || analysisResults).tokenUsage,
+          tokenUsage: analysisResults.tokenUsage,
           date: queryDate
         })
 
@@ -728,6 +729,7 @@ export class ReportPlugin extends plugin {
           topics: analysisResults.topics,
           goldenQuotes: analysisResults.goldenQuotes,
           userTitles: analysisResults.userTitles,
+          mood: analysisResults.mood,
           messageCount: messages.length,
           tokenUsage: analysisResults.tokenUsage
         })
@@ -737,12 +739,11 @@ export class ReportPlugin extends plugin {
 
         logger.mark(`[报告] 主人强制生成${dateLabel}报告成功 - 群 ${e.group_id}, 消息数: ${messages.length}`)
 
-        // 渲染并发送报告
-        const savedReport = await messageCollector.redisHelper.getReport(e.group_id, targetDate)
-        const img = await this.renderReport(savedReport || analysisResults, {
+        // 渲染并发送报告（直接使用analysisResults，不再从Redis读取）
+        const img = await this.renderReport(analysisResults, {
           groupName,
           model: aiService?.model || '',
-          tokenUsage: (savedReport || analysisResults).tokenUsage,
+          tokenUsage: analysisResults.tokenUsage,
           date: targetDate
         })
 

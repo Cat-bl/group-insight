@@ -182,8 +182,10 @@ export default class StatisticsService {
         interactionMap.set(cpKey, (interactionMap.get(cpKey) || 0) + 1)
       }
 
-      // 新增：复读检测
-      if (lastMessage && msg.message && lastMessage.message === msg.message && lastMessage.user_id !== userId) {
+      // 新增：复读检测（排除纯表情占位符，避免把不同表情包误判为复读）
+      const isValidRepeatMessage = msg.message && msg.message !== '[表情]'
+      const lastIsValidRepeat = lastMessage && lastMessage.message && lastMessage.message !== '[表情]'
+      if (lastIsValidRepeat && isValidRepeatMessage && lastMessage.message === msg.message && lastMessage.user_id !== userId) {
         userStat.repeatCount++
         currentRepeatChain.push({ user_id: userId, nickname: msg.nickname, message: msg.message })
       } else {
@@ -191,7 +193,7 @@ export default class StatisticsService {
         if (currentRepeatChain.length >= 2) {
           repeatChains.push([...currentRepeatChain])
         }
-        currentRepeatChain = msg.message ? [{ user_id: userId, nickname: msg.nickname, message: msg.message }] : []
+        currentRepeatChain = isValidRepeatMessage ? [{ user_id: userId, nickname: msg.nickname, message: msg.message }] : []
       }
 
       // 新增：话题终结者检测

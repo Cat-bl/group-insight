@@ -350,6 +350,43 @@ body {
     display: inline-block;
 }
 
+.topic-contributors {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-hand);
+    font-size: 1.05em;
+    color: var(--ink-secondary);
+    margin-bottom: 8px;
+}
+
+.contributors-label {
+    margin-right: 4px;
+}
+
+.contributor-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 2px 8px 2px 2px;
+    border-radius: 15px;
+    border: 1px solid var(--ink-secondary);
+}
+
+.contributor-avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--ink-secondary);
+    object-fit: cover;
+}
+
+.contributor-name {
+    font-size: 0.95em;
+}
+
 .topic-detail {
     font-family: var(--font-hand);
     color: #666;
@@ -554,10 +591,22 @@ body {
 }
 
 .q-author {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
     font-family: var(--font-hand);
     font-weight: bold;
     color: var(--ink-secondary);
     font-size: 0.95rem;
+}
+
+.quote-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--ink-secondary);
+    object-fit: cover;
 }
 
 .q-analysis-note {
@@ -744,10 +793,27 @@ body {
 }
 
 .fun-user {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     font-family: var(--font-title);
     font-size: 1rem;
     color: var(--ink-primary);
     margin-bottom: 5px;
+    max-width: 100%;
+}
+
+.fun-avatar {
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    border-radius: 50%;
+    border: 2px solid var(--ink-secondary);
+    flex-shrink: 0;
+}
+
+.fun-user span {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -782,6 +848,20 @@ body {
     justify-content: center;
     gap: 10px;
     margin-bottom: 10px;
+}
+
+.cp-user-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.cp-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 3px solid var(--ink-primary);
 }
 
 .cp-user {

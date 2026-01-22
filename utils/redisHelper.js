@@ -348,7 +348,8 @@ export default class RedisHelper {
         stats: reportData.stats || {},
         topics: reportData.topics || [],
         goldenQuotes: reportData.goldenQuotes || [],
-        userTitles: reportData.userTitles || []
+        userTitles: reportData.userTitles || [],
+        mood: reportData.mood || null
       }),
       messageCount: reportData.messageCount || 0,
       tokenUsage: JSON.stringify(reportData.tokenUsage || {}),
@@ -405,6 +406,7 @@ export default class RedisHelper {
         topics: analysisData.topics || [],
         goldenQuotes: analysisData.goldenQuotes || [],
         userTitles: analysisData.userTitles || [],
+        mood: analysisData.mood || null,
         messageCount: parseInt(data.messageCount) || 0,
         tokenUsage: tokenUsage,
         lastUpdateTime: parseInt(data.lastUpdateTime) || 0,
