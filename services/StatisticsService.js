@@ -57,7 +57,7 @@ export default class StatisticsService {
 
     // 单次遍历完成所有统计
     for (const msg of messages) {
-      const userId = msg.user_id
+      const userId = String(msg.user_id)  // 确保类型一致
       const hour = msg.hour !== undefined ? msg.hour : new Date(msg.time * 1000).getHours()
       const msgLength = msg.length || msg.message?.length || 0
 
@@ -169,16 +169,18 @@ export default class StatisticsService {
         userStat.atCount += msg.atUsers.length
         // 记录被@的人
         for (const atUserId of msg.atUsers) {
-          beAtMap.set(atUserId, (beAtMap.get(atUserId) || 0) + 1)
+          const atUserIdStr = String(atUserId)  // 确保类型一致
+          beAtMap.set(atUserIdStr, (beAtMap.get(atUserIdStr) || 0) + 1)
           // CP互动统计
-          const cpKey = this.makeCpKey(userId, atUserId)
+          const cpKey = this.makeCpKey(userId, atUserIdStr)
           interactionMap.set(cpKey, (interactionMap.get(cpKey) || 0) + 1)
         }
       }
 
       // 新增：回复互动统计（用于CP）
       if (msg.hasReply && msg.replyToUserId) {
-        const cpKey = this.makeCpKey(userId, msg.replyToUserId)
+        const replyToUserIdStr = String(msg.replyToUserId)  // 确保类型一致
+        const cpKey = this.makeCpKey(userId, replyToUserIdStr)
         interactionMap.set(cpKey, (interactionMap.get(cpKey) || 0) + 1)
       }
 
@@ -201,7 +203,8 @@ export default class StatisticsService {
         const timeDiff = msg.time - lastMessage.time  // 秒
         if (timeDiff > this.silenceThreshold) {
           // 上一条消息的发送者是"话题终结者"
-          silenceAfterMap.set(lastMessage.user_id, (silenceAfterMap.get(lastMessage.user_id) || 0) + 1)
+          const lastUserId = String(lastMessage.user_id)  // 确保类型一致
+          silenceAfterMap.set(lastUserId, (silenceAfterMap.get(lastUserId) || 0) + 1)
         }
       }
 
