@@ -399,6 +399,201 @@ body::before {
   font-size: 14px;
 }
 
+/* 最活跃时段高亮区块 */
+.peak-highlight {
+  margin-top: 20px;
+  padding: 20px 15px;
+  background: linear-gradient(135deg, rgba(255,107,157,0.15) 0%, rgba(109,213,237,0.15) 100%);
+  border: 1px solid rgba(255,107,157,0.3);
+  border-radius: 12px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 星空背景装饰 */
+.peak-highlight::before {
+  content: '✦';
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  font-size: 12px;
+  color: rgba(255,217,61,0.6);
+  text-shadow: 0 0 8px rgba(255,217,61,0.8);
+}
+
+.peak-highlight::after {
+  content: '✦';
+  position: absolute;
+  bottom: 12px;
+  right: 18px;
+  font-size: 10px;
+  color: rgba(109,213,237,0.7);
+  text-shadow: 0 0 8px rgba(109,213,237,0.8);
+}
+
+.peak-slogan {
+  font-size: 18px;
+  font-weight: 700;
+  font-style: italic;
+  font-family: "Georgia", "Times New Roman", serif;
+  background: linear-gradient(135deg, #ff6b9d 0%, #ffd93d 40%, #6dd5ed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-top: 10px;
+  position: relative;
+  z-index: 1;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+/* 月亮星星挂件 */
+.peak-decor-moon {
+  position: absolute;
+  top: -8px;
+  left: 20px;
+  font-size: 20px;
+  filter: drop-shadow(0 0 6px rgba(255,217,61,0.8));
+}
+
+.peak-decor-star1 {
+  position: absolute;
+  top: -6px;
+  right: 30px;
+  font-size: 16px;
+  filter: drop-shadow(0 0 5px rgba(255,107,157,0.8));
+}
+
+.peak-decor-star2 {
+  position: absolute;
+  bottom: -6px;
+  left: 40px;
+  font-size: 14px;
+  filter: drop-shadow(0 0 5px rgba(109,213,237,0.8));
+}
+
+.peak-decor-star3 {
+  position: absolute;
+  bottom: -8px;
+  right: 25px;
+  font-size: 18px;
+  filter: drop-shadow(0 0 6px rgba(255,217,61,0.8));
+}
+
+/* 左侧装饰 */
+.peak-side-left {
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.peak-side-left .deco-star-big {
+  font-size: 18px;
+  filter: drop-shadow(0 0 8px rgba(255,217,61,0.8));
+}
+
+.peak-side-left .deco-star {
+  font-size: 12px;
+  color: #ffd93d;
+  text-shadow: 0 0 6px rgba(255,217,61,0.8);
+}
+
+/* 右侧装饰 */
+.peak-side-right {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.peak-side-right .deco-star-big {
+  font-size: 18px;
+  filter: drop-shadow(0 0 8px rgba(255,107,157,0.8));
+}
+
+.peak-side-right .deco-star-small {
+  font-size: 10px;
+  color: #6dd5ed;
+  text-shadow: 0 0 6px rgba(109,213,237,0.8);
+}
+
+/* 星星装饰 */
+.peak-stars {
+  position: absolute;
+  top: 8px;
+  right: 30px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 6px;
+}
+
+.peak-stars-left {
+  position: absolute;
+  top: 12px;
+  left: 25px;
+  font-size: 8px;
+  color: rgba(255,217,61,0.5);
+  letter-spacing: 5px;
+}
+
+.peak-stars-bottom {
+  position: absolute;
+  bottom: 8px;
+  left: 30px;
+  font-size: 8px;
+  color: rgba(109,213,237,0.5);
+  letter-spacing: 6px;
+}
+
+.peak-stars-mid {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  font-size: 14px;
+  color: rgba(255,107,157,0.4);
+  transform: translateY(-50%);
+}
+
+.peak-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.peak-label {
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+}
+
+.peak-time {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffd93d;
+  text-shadow: 0 0 10px rgba(255,217,61,0.5);
+  padding: 4px 12px;
+  background: rgba(255,217,61,0.15);
+  border-radius: 20px;
+  border: 1px solid rgba(255,217,61,0.3);
+  white-space: nowrap;
+}
+
 /* ==================== 章节标题 ==================== */
 .section-header {
   text-align: center;
