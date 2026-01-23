@@ -45,7 +45,7 @@ ${formattedMessages}
 1. 判断整体氛围是"积极"、"中性"还是"消极"
 2. 给出情绪分数（0-100，0最消极，100最积极）
 3. 提取3-5个情绪关键词（如：欢乐、吐槽、调侃、焦虑、友好等）
-4. 用一句话总结今日群聊氛围
+4. 总结今日群聊氛围
 
 ## 返回格式（JSON）
 {
@@ -58,7 +58,7 @@ ${formattedMessages}
 请只返回JSON格式，不要有其他内容。`
 
     try {
-      const result = await this.callAI(prompt, 500, 0.5)
+      const result = await this.callAI(prompt, 20000, 0.5)
 
       if (!result?.content) {
         logger.warn('[MoodAnalyzer] AI 返回内容为空')
