@@ -39,10 +39,10 @@ export class ReportPlugin extends plugin {
       ]
     })
 
-    // ✅ 定时任务：每天23:59执行
+    // ✅ 定时任务：每天21:00执行
     this.task = {
       name: '每日群聊报告',
-      cron: '59 23 * * *',
+      cron: '0 21 * * *',
       fnc: () => this.scheduledReport(),
       log: true
     }
@@ -320,6 +320,24 @@ export class ReportPlugin extends plugin {
               messageCount: messages.length,
               tokenUsage: analysisResults.tokenUsage
             })
+
+            // 渲染并发送报告
+            const aiService = await getAIService()
+            const img = await this.renderReport(analysisResults, {
+              groupName,
+              model: aiService?.model || '',
+              tokenUsage: analysisResults.tokenUsage,
+              date: targetDate
+            })
+
+            if (img && group) {
+              try {
+                await group.sendMsg(img)
+                logger.info(`[报告] 群 ${groupId} 报告已自动发送`)
+              } catch (sendErr) {
+                logger.error(`[报告] 群 ${groupId} 发送报告失败: ${sendErr}`)
+              }
+            }
 
             // 设置冷却标记（防止定时任务后1小时内频繁手动触发）
             await this.setCooldown(groupId, 'scheduled', messages.length)
