@@ -183,7 +183,7 @@ body {
 .quest-detail {
   font-size: 18px;
   color: #aaa;
-  line-height: 1.5;
+  line-height: 2.0;
 }
 
 .quest-contributors {
@@ -665,6 +665,9 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 6px;
+  flex: 1;
+  min-width: 0;
+  max-width: 120px;
 }
 
 .cp-avatar {
@@ -677,8 +680,11 @@ body {
 
 .cp-user {
   font-family: 'VT323', monospace;
-  font-size: 20px;
+  font-size: 18px;
   color: #fff;
+  text-align: center;
+  word-break: break-word;
+  line-height: 1.3;
 }
 
 .cp-heart {
@@ -753,9 +759,9 @@ body {
   background: #4ade80;
   border-radius: 0;
   padding: 2px 6px 2px 2px;
-  margin: 0 4px;
+  margin: 2px 4px;
   font-size: inherit;
-  line-height: inherit;
+  line-height: 1.4;
   vertical-align: middle;
   white-space: nowrap;
   border: 2px solid #222;

@@ -392,6 +392,7 @@ body {
     color: #666;
     font-size: 1.2rem;
     margin-top: 8px;
+    line-height: 2.0;
 }
 
 /* ==================== 6. 群友画像 ==================== */
@@ -855,6 +856,9 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 6px;
+    flex: 1;
+    min-width: 0;
+    max-width: 120px;
 }
 
 .cp-avatar {
@@ -866,8 +870,11 @@ body {
 
 .cp-user {
     font-family: var(--font-title);
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: var(--ink-primary);
+    text-align: center;
+    word-break: break-word;
+    line-height: 1.3;
 }
 
 .cp-heart {
@@ -927,9 +934,9 @@ body {
     background: var(--color-yellow);
     border-radius: 12px;
     padding: 2px 8px 2px 2px;
-    margin: 0 4px;
+    margin: 2px 4px;
     font-size: inherit;
-    line-height: inherit;
+    line-height: 1.4;
     vertical-align: middle;
     white-space: nowrap;
     border: 1px dashed var(--ink-secondary);
