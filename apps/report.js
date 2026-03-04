@@ -39,13 +39,43 @@ export class ReportPlugin extends plugin {
       ]
     })
 
-    // ✅ 定时任务：每天21:00执行
-    this.task = {
-      name: '每日群聊报告',
-      cron: '0 21 * * *',
+    // ✅ 定时任务
+    this.task = this.buildScheduledTasks()
+  }
+
+  /**
+   * 构建定时任务列表
+   * @returns {Array} 定时任务数组
+   */
+  buildScheduledTasks() {
+    const config = Config.get()
+    const scheduleConfig = config?.schedule || {}
+    const sendConfig = scheduleConfig.send || {}
+
+    const tasks = []
+
+    // 定时任务1：每天23:59生成报告
+    tasks.push({
+      name: '每日群聊报告生成',
+      cron: '59 23 * * *',
       fnc: () => this.scheduledReport(),
       log: true
+    })
+
+    // 定时任务2：定时发送报告（仅 scheduled 模式）
+    if (sendConfig.mode === 'scheduled') {
+      const sendHour = sendConfig.sendHour ?? 8 // 默认早8点
+      const sendMinute = sendConfig.sendMinute ?? 0 // 默认整点
+      const cron = `${sendMinute} ${sendHour} * * *`
+      tasks.push({
+        name: '每日群聊报告发送',
+        cron,
+        fnc: () => this.scheduledSendReport(),
+        log: true
+      })
     }
+
+    return tasks
   }
 
   /**
@@ -95,8 +125,20 @@ export class ReportPlugin extends plugin {
     // 显示定时总结状态
     const scheduleEnabled = config?.schedule?.enabled !== false
     const whitelist = config?.schedule?.whitelist || []
+    const sendConfig = config?.schedule?.send || {}
+    const sendMode = sendConfig.mode || 'disabled'
+
     if (scheduleEnabled && whitelist.length > 0) {
-      logger.info(`[报告] 定时总结已启用，白名单群数: ${whitelist.length}`)
+      const sendHour = sendConfig.sendHour ?? 8
+      const sendMinute = sendConfig.sendMinute ?? 0
+      const timeStr = `${String(sendHour).padStart(2, '0')}:${String(sendMinute).padStart(2, '0')}`
+      const sendModeLabel = {
+        'disabled': '仅保存',
+        'immediate': '立即发送',
+        'scheduled': `定时发送 (每天 ${timeStr})`
+      }[sendMode] || '仅保存'
+
+      logger.info(`[报告] 定时总结已启用，白名单群数: ${whitelist.length}，发送模式: ${sendModeLabel}`)
     } else {
       logger.info('[报告] 定时总结未启用（需配置白名单群）')
     }
@@ -247,10 +289,12 @@ export class ReportPlugin extends plugin {
 
     const config = Config.get()
     const scheduleConfig = config?.schedule || {}
+    const sendConfig = scheduleConfig.send || {}
     const enabled = scheduleConfig.enabled !== false
     const whitelist = scheduleConfig.whitelist || []
     const minMessages = scheduleConfig.minMessages || 99
     const concurrency = scheduleConfig.concurrency || 3
+    const sendMode = sendConfig.mode || 'disabled'
 
     // 检查是否启用
     if (!enabled || whitelist.length === 0) {
@@ -260,7 +304,7 @@ export class ReportPlugin extends plugin {
 
     // 固定目标日期为任务触发时的"今天"，避免跨日边界问题
     const targetDate = moment().format('YYYY-MM-DD')
-    logger.mark(`[报告] 开始执行定时报告任务 (目标日期: ${targetDate}, 白名单群数: ${whitelist.length}, 并发数: ${concurrency})`)
+    logger.mark(`[报告] 开始执行定时报告任务 (目标日期: ${targetDate}, 白名单群数: ${whitelist.length}, 并发数: ${concurrency}, 发送模式: ${sendMode})`)
 
     // 使用并发限制处理白名单群
     const results = await this.runWithConcurrency(
@@ -275,24 +319,17 @@ export class ReportPlugin extends plugin {
             return { groupId, status: 'skipped', reason: 'insufficient_messages' }
           }
 
-          // 检查是否正在生成中（避免与用户手动触发冲突）
-          if (await this.isGenerating(groupId, targetDate)) {
-            logger.info(`[报告] 群 ${groupId} ${targetDate} 报告正在生成中，跳过定时任务`)
-            return { groupId, status: 'skipped', reason: 'already_generating' }
-          }
-
           // 尝试获取生成锁
           if (!await this.acquireGeneratingLock(groupId, targetDate)) {
-            logger.info(`[报告] 群 ${groupId} ${targetDate} 获取锁失败，跳过定时任务`)
-            return { groupId, status: 'skipped', reason: 'lock_failed' }
+            logger.info(`[报告] 群 ${groupId} ${targetDate} 报告正在生成中，跳过定时任务`)
+            return { groupId, status: 'skipped', reason: 'already_generating' }
           }
 
           try {
             // 获取群名
             let groupName = `群${groupId}`
             try {
-              const bot = Bot.bots?.[Bot.uin?.[0]] || Bot
-              const group = bot.pickGroup?.(groupId)
+              const group = Bot.pickGroup?.(groupId)
               if (group) {
                 const groupInfo = await group.getInfo?.()
                 groupName = groupInfo?.group_name || groupInfo?.name || groupName
@@ -321,29 +358,28 @@ export class ReportPlugin extends plugin {
               tokenUsage: analysisResults.tokenUsage
             })
 
-            // 渲染并发送报告
-            const aiService = await getAIService()
-            const img = await this.renderReport(analysisResults, {
-              groupName,
-              model: aiService?.model || '',
-              tokenUsage: analysisResults.tokenUsage,
-              date: targetDate
-            })
-
-            if (img && group) {
-              try {
-                await group.sendMsg(img)
-                logger.info(`[报告] 群 ${groupId} 报告已自动发送`)
-              } catch (sendErr) {
-                logger.error(`[报告] 群 ${groupId} 发送报告失败: ${sendErr}`)
-              }
-            }
-
             // 设置冷却标记（防止定时任务后1小时内频繁手动触发）
             await this.setCooldown(groupId, 'scheduled', messages.length)
 
             logger.mark(`[报告] 群 ${groupId} ${targetDate} 报告生成成功 (${messages.length} 条消息)`)
-            return { groupId, status: 'success', messageCount: messages.length }
+
+            // immediate 模式：生成后立即发送
+            let sendResult = null
+            if (sendMode === 'immediate') {
+              sendResult = await this.sendReportToGroup(groupId, targetDate, { groupName })
+              if (sendResult.success) {
+                logger.info(`[报告] 群 ${groupId} 报告已立即发送`)
+              } else {
+                logger.warn(`[报告] 群 ${groupId} 报告立即发送失败: ${sendResult.error}`)
+              }
+            }
+
+            return {
+              groupId,
+              status: 'success',
+              messageCount: messages.length,
+              sent: sendMode === 'immediate' ? sendResult?.success : undefined
+            }
           } finally {
             // 无论成功失败都释放锁
             await this.releaseGeneratingLock(groupId, targetDate)
@@ -365,7 +401,13 @@ export class ReportPlugin extends plugin {
       error: results.filter(r => r.status === 'error').length
     }
 
-    logger.mark(`[报告] 定时报告任务执行完成 - 总数: ${summary.total}, 成功: ${summary.success}, 失败: ${summary.failed}, 跳过: ${summary.skipped}, 异常: ${summary.error}`)
+    // immediate 模式下统计发送情况
+    if (sendMode === 'immediate') {
+      const sentCount = results.filter(r => r.sent === true).length
+      logger.mark(`[报告] 定时报告任务执行完成 - 总数: ${summary.total}, 成功: ${summary.success}, 失败: ${summary.failed}, 跳过: ${summary.skipped}, 异常: ${summary.error}, 已发送: ${sentCount}`)
+    } else {
+      logger.mark(`[报告] 定时报告任务执行完成 - 总数: ${summary.total}, 成功: ${summary.success}, 失败: ${summary.failed}, 跳过: ${summary.skipped}, 异常: ${summary.error}`)
+    }
   }
 
   /**
@@ -390,6 +432,143 @@ export class ReportPlugin extends plugin {
     }
 
     return Promise.all(results)
+  }
+
+  /**
+   * 发送报告到指定群
+   * @param {number} groupId - 群号
+   * @param {string} date - 报告日期 (YYYY-MM-DD)
+   * @param {Object} options - 额外选项
+   * @param {Object} options.report - 可选的报告数据（避免重复从 Redis 获取）
+   * @param {string} options.groupName - 可选的群名
+   * @returns {Object} { success: boolean, error?: string }
+   */
+  async sendReportToGroup(groupId, date, options = {}) {
+    try {
+      const messageCollector = await getMessageCollector()
+      const aiService = await getAIService()
+
+      if (!messageCollector) {
+        return { success: false, error: 'collector_not_ready' }
+      }
+
+      // 获取报告数据
+      let report = options.report
+      if (!report) {
+        report = await messageCollector.redisHelper.getReport(groupId, date)
+        logger.debug(`[报告发送] 从 Redis 获取群 ${groupId} 的报告数据`)
+      }
+
+      if (!report) {
+        logger.warn(`[报告发送] 群 ${groupId} ${date} 报告不存在，跳过发送`)
+        return { success: false, error: 'report_not_found' }
+      }
+
+      // 验证报告数据的群 ID 是否匹配
+      if (report.groupId && report.groupId !== groupId) {
+        logger.error(`[报告发送] 数据不匹配！期望群 ${groupId}，但获取到群 ${report.groupId} 的报告`)
+        return { success: false, error: 'report_mismatch' }
+      }
+
+      logger.debug(`[报告发送] 群 ${groupId} 报告数据验证通过，消息数: ${report.stats?.basic?.totalMessages || 'unknown'}`)
+
+      // 使用 Bot.pickGroup 自动选择正确的适配器
+      const group = Bot.pickGroup?.(groupId)
+      if (!group) {
+        logger.error(`[报告发送] 无法获取群 ${groupId} 对象（可能没有 Bot 在该群）`)
+        return { success: false, error: 'group_not_found' }
+      }
+
+      // 获取群名
+      let groupName = options.groupName || `群${groupId}`
+      if (!options.groupName) {
+        try {
+          const groupInfo = await group.getInfo?.()
+          groupName = groupInfo?.group_name || groupInfo?.name || groupName
+        } catch (err) {
+          logger.debug(`[报告发送] 获取群 ${groupId} 名称失败，使用默认名称`)
+        }
+      }
+
+      // 渲染报告
+      const img = await this.renderReport(report, {
+        groupName,
+        model: aiService?.model || '',
+        tokenUsage: report.tokenUsage,
+        date
+      })
+
+      if (!img) {
+        logger.error(`[报告发送] 群 ${groupId} ${date} 报告渲染失败`)
+        return { success: false, error: 'render_failed' }
+      }
+
+      // 发送到群
+      try {
+        await group.sendMsg(img)
+        logger.info(`[报告发送] 成功发送报告到群 ${groupId} (${groupName})`)
+        return { success: true }
+      } catch (err) {
+        logger.error(`[报告发送] 发送到群 ${groupId} 失败: ${err}`)
+        return { success: false, error: err.message }
+      }
+    } catch (err) {
+      logger.error(`[报告发送] 群 ${groupId} 发送异常: ${err}`)
+      return { success: false, error: err.message }
+    }
+  }
+
+  /**
+   * 定时任务：按配置的 cron 发送前一天的报告
+   * 仅在 send.mode = 'scheduled' 时由定时任务调用
+   */
+  async scheduledSendReport() {
+    const messageCollector = await getMessageCollector()
+    if (!messageCollector) {
+      logger.warn('[报告发送] 定时发送功能未就绪')
+      return
+    }
+
+    const config = Config.get()
+    const scheduleConfig = config?.schedule || {}
+    const sendConfig = scheduleConfig.send || {}
+    const whitelist = scheduleConfig.whitelist || []
+    // 串行执行避免并发渲染bug
+    const concurrency = 1
+
+    // 检查是否启用
+    if (!scheduleConfig.enabled || whitelist.length === 0) {
+      logger.debug('[报告发送] 定时发送未启用或白名单为空，跳过')
+      return
+    }
+
+    if (sendConfig.mode !== 'scheduled') {
+      logger.debug('[报告发送] 发送模式不是 scheduled，跳过定时发送')
+      return
+    }
+
+    // 发送前一天的报告
+    const targetDate = moment().subtract(1, 'days').format('YYYY-MM-DD')
+    logger.mark(`[报告发送] 开始执行定时发送任务 (目标日期: ${targetDate}, 白名单群数: ${whitelist.length})`)
+
+    // 串行处理避免并发渲染导致的数据混淆
+    const results = await this.runWithConcurrency(
+      whitelist,
+      async (groupId) => {
+        const result = await this.sendReportToGroup(groupId, targetDate)
+        return { groupId, ...result }
+      },
+      concurrency
+    )
+
+    // 统计结果
+    const summary = {
+      total: results.length,
+      success: results.filter(r => r.success).length,
+      failed: results.filter(r => !r.success).length
+    }
+
+    logger.mark(`[报告发送] 定时发送任务完成 - 总数: ${summary.total}, 成功: ${summary.success}, 失败: ${summary.failed}`)
   }
 
   /**

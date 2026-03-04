@@ -858,6 +858,44 @@ i.fas, i.far, i.fab {
   font-weight: 500;
 }
 
+/* 用户胶囊组件 (inline avatar + name for topic detail) */
+.user-capsule {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 2px 8px 2px 2px;
+  margin: 0 4px;
+  font-size: inherit;
+  line-height: inherit;
+  vertical-align: middle;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(102, 126, 234, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-capsule:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.4);
+}
+
+.user-capsule-avatar {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin-right: 6px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.user-capsule-name {
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 12px;
+}
+
 /* 移动端适配 */
 @media (max-width: 768px) {
   body {

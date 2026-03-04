@@ -52,5 +52,48 @@ export default [
       max: 60,
       placeholder: "请输入冷却时长 (1-60分钟)"
     }
+  },
+  {
+    component: "Divider",
+    label: "报告发送设置"
+  },
+  {
+    field: "groupManager.schedule.send.mode",
+    label: "发送模式",
+    helpMessage: "报告生成后的发送方式",
+    bottomHelpMessage: "disabled=仅保存不发送，immediate=生成后立即发送，scheduled=第二天定时发送",
+    component: "Select",
+    componentProps: {
+      options: [
+        { label: "仅保存（不发送）", value: "disabled" },
+        { label: "立即发送", value: "immediate" },
+        { label: "定时发送", value: "scheduled" }
+      ],
+      placeholder: "请选择发送模式"
+    }
+  },
+  {
+    field: "groupManager.schedule.send.sendHour",
+    label: "定时发送 - 小时",
+    helpMessage: "定时发送模式下，每天几点发送前一天的报告",
+    bottomHelpMessage: "仅在发送模式为「定时发送」时生效",
+    component: "InputNumber",
+    componentProps: {
+      min: 0,
+      max: 23,
+      placeholder: "0-23 小时"
+    }
+  },
+  {
+    field: "groupManager.schedule.send.sendMinute",
+    label: "定时发送 - 分钟",
+    helpMessage: "定时发送模式下，几分发送",
+    bottomHelpMessage: "仅在发送模式为「定时发送」时生效",
+    component: "InputNumber",
+    componentProps: {
+      min: 0,
+      max: 59,
+      placeholder: "0-59 分钟"
+    }
   }
 ]

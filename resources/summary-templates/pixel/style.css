@@ -746,6 +746,46 @@ body {
   color: #666;
 }
 
+/* 用户胶囊组件 (inline avatar + name for topic detail) */
+.user-capsule {
+  display: inline-flex;
+  align-items: center;
+  background: #4ade80;
+  border-radius: 0;
+  padding: 2px 6px 2px 2px;
+  margin: 0 4px;
+  font-size: inherit;
+  line-height: inherit;
+  vertical-align: middle;
+  white-space: nowrap;
+  border: 2px solid #222;
+  box-shadow: 2px 2px 0 #222;
+  image-rendering: pixelated;
+}
+
+.user-capsule:hover {
+  background: #fbbf24;
+}
+
+.user-capsule-avatar {
+  width: 16px;
+  height: 16px;
+  border-radius: 0;
+  margin-right: 4px;
+  object-fit: cover;
+  border: 1px solid #222;
+  background: #ffffff;
+  flex-shrink: 0;
+  image-rendering: pixelated;
+}
+
+.user-capsule-name {
+  color: #222;
+  font-weight: bold;
+  font-size: 11px;
+  font-family: 'Press Start 2P', monospace, sans-serif;
+}
+
 /* ==================== 移动端适配 ==================== */
 @media (max-width: 768px) {
   body {

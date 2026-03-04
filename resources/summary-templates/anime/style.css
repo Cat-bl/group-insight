@@ -1100,6 +1100,45 @@ body::before {
   line-height: 1.8;
 }
 
+/* 用户胶囊组件 (inline avatar + name for topic detail) */
+.user-capsule {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+  border-radius: 12px;
+  padding: 2px 8px 2px 2px;
+  margin: 0 4px;
+  font-size: inherit;
+  line-height: inherit;
+  vertical-align: middle;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(255, 107, 157, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-capsule:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.5);
+}
+
+.user-capsule-avatar {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin-right: 6px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.user-capsule-name {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 12px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
 /* ==================== 移动端适配 ==================== */
 @media (max-width: 768px) {
   body {

@@ -135,7 +135,7 @@
         <div class="quest-checkbox"></div>
         <div>
           <div class="quest-title">{{topic.topic}}</div>
-          <div class="quest-detail">{{topic.detail}}</div>
+          <div class="quest-detail">{{@topic.detail}}</div>
           {{if topic.contributors && topic.contributors.length > 0}}
           <div class="quest-contributors">
             参与者: {{each topic.contributors contributor contributorIndex}}{{if contributorIndex >

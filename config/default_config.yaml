@@ -175,8 +175,17 @@ groupManager:
     # 主人和定时任务不受此限制
     cooldownMinutes: 60
 
-    # 注意：定时任务已修改为每天23:59执行 (cron: '59 23 * * *')
-    # 如需修改执行时间，请直接编辑 apps/report.js 中的 this.task.cron
+    # 报告发送配置
+    send:
+      # 发送模式
+      # disabled - 仅保存报告，不自动发送
+      # immediate - 生成后立即发送到群
+      # scheduled - 第二天定时发送（如早8点发送昨天的报告）
+      mode: 'disabled'
+
+      # 定时发送时间（仅 scheduled 模式生效）
+      sendHour: 8      # 小时 (0-23)
+      sendMinute: 0    # 分钟 (0-59)
 
   # 总结功能配置
   summary:

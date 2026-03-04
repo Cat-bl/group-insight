@@ -60,7 +60,7 @@
           {{each topics topic index}}
           <div class="topic-item">
             <div class="topic-name">{{topic.topic}}</div>
-            <div class="topic-desc">{{topic.detail}}</div>
+            <div class="topic-desc">{{@topic.detail}}</div>
             {{if topic.contributors && topic.contributors.length > 0}}
             <div class="topic-users">
               <span class="topic-users-label">参与:</span>

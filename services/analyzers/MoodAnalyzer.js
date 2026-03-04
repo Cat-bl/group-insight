@@ -31,9 +31,8 @@ export default class MoodAnalyzer extends BaseAnalyzer {
 
     // 采样消息（最多200条，均匀分布）
     const sampleMessages = this.sampleMessages(messages, 200)
-    const formattedMessages = this.formatMessages(sampleMessages, {
-      includeTime: false,
-      includeNickname: true
+    const { text: formattedMessages } = this.formatMessages(sampleMessages, {
+      includeTime: false
     })
 
     const prompt = `你是一个群聊氛围分析专家。请分析以下群聊消息的整体情绪氛围。

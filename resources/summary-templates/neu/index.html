@@ -116,7 +116,7 @@
       {{each topics topic index}}
       <div class="topic-card neu-inset">
         <div class="topic-title">{{topic.topic}}</div>
-        <div class="topic-detail">{{topic.detail}}</div>
+        <div class="topic-detail">{{@topic.detail}}</div>
         {{if topic.contributors && topic.contributors.length > 0}}
         <div class="topic-contributors">
           <span class="topic-contributors-label">参与者:</span>
