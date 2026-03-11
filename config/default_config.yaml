@@ -1,7 +1,7 @@
 # 群聊信息管理插件配置文件
 
 # 配置文件版本号（请勿手动修改）
-configVersion: 5
+configVersion: 6
 
 groupManager:
   # 消息保留天数
@@ -127,6 +127,32 @@ groupManager:
 
     # 背景颜色
     backgroundColor: '#ffffff'
+
+    # 输出格式
+    # static - 静态图片 (PNG/JPEG)
+    # gif - 动态 GIF 词云（词语漂浮效果）
+    outputFormat: 'gif'
+
+    # GIF 动图配置（仅 outputFormat 为 gif 时生效）
+    gif:
+      # 帧数（越多越流畅，文件越大）
+      frames: 60
+      # 动画周期时长（毫秒，一轮漂浮的总时间）
+      duration: 2400
+      # GIF 画布宽度（较小以控制文件大小）
+      width: 600
+      # GIF 画布高度
+      height: 400
+      # 动画效果
+      # float - 漂浮（词语轻轻飘动）
+      # pulse - 脉动（词语呼吸般缩放）
+      # wave - 波浪（词语上下波浪起伏）
+      # galaxy - 星云（词语围绕原位做圆周运动）
+      # ripple - 涟漪（从中心向外扩散的波纹）
+      # firefly - 萤火虫（漂浮移动 + 明灭闪烁）
+      # bounce - 弹跳（词语上下弹跳）
+      # tide - 潮汐（所有词语整体缓慢涌动）
+      effect: 'float'
 
     # 渲染质量配置
     render:

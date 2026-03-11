@@ -3,6 +3,7 @@
  */
 import plugin from '../../../lib/plugins/plugin.js'
 import { getMessageCollector, getWordCloudGenerator } from '../components/index.js'
+import Config from '../components/Config.js'
 import { logger } from '#lib'
 
 export class WordCloudPlugin extends plugin {
@@ -79,12 +80,16 @@ export class WordCloudPlugin extends plugin {
         groupName = `群${e.group_id}`
       }
 
-      // 生成词云
-      const img = await wordCloudGenerator.generate(messages, {
-        groupId: e.group_id,
-        groupName,
-        days
-      })
+      const genOptions = { groupId: e.group_id, groupName, days }
+
+      // 根据配置选择输出格式
+      const outputFormat = Config.get()?.wordCloud?.outputFormat || 'static'
+      let img
+      if (outputFormat === 'gif') {
+        img = await wordCloudGenerator.generateGif(messages, genOptions)
+      } else {
+        img = await wordCloudGenerator.generate(messages, genOptions)
+      }
 
       if (!img) {
         return this.reply('词云生成失败，请查看日志', true)
@@ -152,13 +157,16 @@ export class WordCloudPlugin extends plugin {
         groupName = `群${e.group_id}`
       }
 
-      // 生成词云
-      const img = await wordCloudGenerator.generate(messages, {
-        groupId: e.group_id,
-        groupName,
-        days,
-        userName  // 传递用户名用于显示个人词云标题
-      })
+      const genOptions = { groupId: e.group_id, groupName, days, userName }
+
+      // 根据配置选择输出格式
+      const outputFormat = Config.get()?.wordCloud?.outputFormat || 'static'
+      let img
+      if (outputFormat === 'gif') {
+        img = await wordCloudGenerator.generateGif(messages, genOptions)
+      } else {
+        img = await wordCloudGenerator.generate(messages, genOptions)
+      }
 
       if (!img) {
         return this.reply('词云生成失败，请查看日志', true)

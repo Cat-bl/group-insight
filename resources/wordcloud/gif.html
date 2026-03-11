@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>群聊词云 GIF</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Microsoft YaHei', SimHei, sans-serif;
+      background: #F5F7FA;
+      width: {{width}}px;
+      height: {{height}}px;
+      overflow: hidden;
+    }
+    .container {
+      width: {{width}}px;
+      height: {{height}}px;
+      display: flex;
+      flex-direction: column;
+      background: white;
+    }
+    .header {
+      background: #5B7FFF;
+      color: white;
+      padding: 10px 16px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .info {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      font-size: 11px;
+    }
+    .info span {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+    #wordcloud-area {
+      position: relative;
+      flex: 1;
+      overflow: hidden;
+      background: {{backgroundColor}};
+    }
+    .word {
+      position: absolute;
+      white-space: nowrap;
+      font-weight: 600;
+      will-change: transform;
+      user-select: none;
+    }
+    .footer {
+      background: #F5F7FA;
+      padding: 6px 10px;
+      text-align: center;
+      color: #7D8694;
+      font-size: 10px;
+      border-top: 1px solid #E4E7EB;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      {{if isPersonal}}
+      <div class="title">{{userName}} 的词云</div>
+      {{else}}
+      <div class="title">群聊词云</div>
+      {{/if}}
+      <div class="info">
+        <span>{{groupName}}</span>
+        <span>{{timeRange}}</span>
+        <span>消息数: {{messageCount}}</span>
+      </div>
+    </div>
+
+    <div id="wordcloud-area"></div>
+
+    <div class="footer">
+      {{createTime}} · group-insight
+    </div>
+  </div>
+
+  <script>
+    const wordList = {{@wordListJson}};
+    const area = document.getElementById('wordcloud-area');
+    const AREA_W = area.offsetWidth;
+    const AREA_H = area.offsetHeight;
+
+    const COLORS = [
+      '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
+      '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#8b5cf6',
+      '#06b6d4', '#f59e0b', '#10b981', '#f43f5e'
+    ];
+
+    const placed = [];
+
+    function collides(rect) {
+      for (const p of placed) {
+        if (
+          rect.x < p.x + p.w &&
+          rect.x + rect.w > p.x &&
+          rect.y < p.y + p.h &&
+          rect.y + rect.h > p.y
+        ) return true;
+      }
+      return false;
+    }
+
+    const wordElements = [];
+
+    const wordCount = wordList.length;
+    let maxFont, minFont;
+    if (wordCount < 20) {
+      maxFont = Math.min(AREA_W / 8, AREA_H / 4);
+      minFont = Math.max(14, maxFont * 0.25);
+    } else if (wordCount < 50) {
+      maxFont = Math.min(AREA_W / 10, AREA_H / 5);
+      minFont = Math.max(12, maxFont * 0.2);
+    } else {
+      maxFont = Math.min(AREA_W / 14, AREA_H / 6);
+      minFont = Math.max(10, maxFont * 0.15);
+    }
+
+    const sorted = [...wordList].sort((a, b) => b[1] - a[1]);
+
+    for (let i = 0; i < sorted.length; i++) {
+      const [word, weight] = sorted[i];
+      const fontSize = minFont + (weight - 1) / 9 * (maxFont - minFont);
+
+      const span = document.createElement('span');
+      span.className = 'word';
+      span.textContent = word;
+      span.style.fontSize = fontSize + 'px';
+      span.style.color = COLORS[i % COLORS.length];
+      area.appendChild(span);
+
+      const rect = span.getBoundingClientRect();
+      const areaRect = area.getBoundingClientRect();
+      const w = rect.width + 4;
+      const h = rect.height + 2;
+
+      const cx = AREA_W / 2 - w / 2;
+      const cy = AREA_H / 2 - h / 2;
+      let posFound = false;
+      let px = cx, py = cy;
+
+      for (let r = 0; r < Math.max(AREA_W, AREA_H); r += 2) {
+        for (let angle = 0; angle < 360; angle += (r < 50 ? 15 : 30)) {
+          const rad = angle * Math.PI / 180;
+          const tx = cx + r * Math.cos(rad);
+          const ty = cy + r * Math.sin(rad) * 0.7;
+
+          const candidate = { x: tx, y: ty, w, h };
+          if (
+            tx >= 0 && ty >= 0 &&
+            tx + w <= AREA_W && ty + h <= AREA_H &&
+            !collides(candidate)
+          ) {
+            px = tx;
+            py = ty;
+            posFound = true;
+            break;
+          }
+        }
+        if (posFound) break;
+      }
+
+      if (!posFound) {
+        span.remove();
+        continue;
+      }
+
+      placed.push({ x: px, y: py, w, h });
+
+      span.style.left = px + 'px';
+      span.style.top = py + 'px';
+
+      const phaseX = Math.random() * Math.PI * 2;
+      const phaseY = Math.random() * Math.PI * 2;
+      const phaseR = Math.random() * Math.PI * 2;
+      const ampX = 2 + Math.random() * 3;
+      const ampY = 1.5 + Math.random() * 2;
+
+      wordElements.push({
+        el: span, baseX: px, baseY: py,
+        phaseX, phaseY, phaseR, ampX, ampY
+      });
+    }
+
+    let frameIndex = 0;
+    const TOTAL_FRAMES = {{frameCount}};
+    const STEP = (Math.PI * 2) / TOTAL_FRAMES;
+
+    const EFFECT = '{{effect}}' || 'float';
+
+    const EFFECTS = {
+      float(t, w) {
+        const dx = Math.sin(t + w.phaseX) * w.ampX;
+        const dy = Math.cos(t + w.phaseY) * w.ampY;
+        const rot = Math.sin(t + w.phaseR) * 2;
+        return `translate(${dx}px,${dy}px) rotate(${rot}deg)`;
+      },
+      pulse(t, w) {
+        const s = 1 + Math.sin(t + w.phaseX) * 0.15;
+        const opacity = 0.75 + Math.sin(t + w.phaseY) * 0.25;
+        w.el.style.opacity = opacity;
+        return `scale(${s})`;
+      },
+      wave(t, w) {
+        const wavePhase = (w.baseX / AREA_W) * Math.PI * 2;
+        const dy = Math.sin(t + wavePhase) * w.ampY * 1.5;
+        return `translateY(${dy}px)`;
+      },
+      galaxy(t, w) {
+        const radius = w.ampX * 0.8;
+        const dx = Math.cos(t + w.phaseX) * radius;
+        const dy = Math.sin(t + w.phaseX) * radius * 0.6;
+        const rot = Math.sin(t + w.phaseR) * 3;
+        return `translate(${dx}px,${dy}px) rotate(${rot}deg)`;
+      },
+      ripple(t, w) {
+        const cx = AREA_W / 2, cy = AREA_H / 2;
+        const dist = Math.sqrt((w.baseX - cx) ** 2 + (w.baseY - cy) ** 2);
+        const maxDist = Math.sqrt(cx * cx + cy * cy);
+        const rp = (dist / maxDist) * Math.PI * 2;
+        const dy = Math.sin(t + rp) * w.ampY * 1.2;
+        const s = 1 + Math.sin(t + rp) * 0.08;
+        return `translateY(${dy}px) scale(${s})`;
+      },
+      firefly(t, w) {
+        const dx = Math.sin(t + w.phaseX) * w.ampX * 0.7;
+        const dy = Math.cos(t + w.phaseY) * w.ampY * 0.7;
+        w.el.style.opacity = 0.5 + Math.sin(t + w.phaseR) * 0.5;
+        return `translate(${dx}px,${dy}px)`;
+      },
+      bounce(t, w) {
+        const dy = -Math.abs(Math.sin(t + w.phaseX)) * w.ampY * 2;
+        const s = 1 + Math.abs(Math.sin(t + w.phaseX)) * 0.05;
+        return `translateY(${dy}px) scale(${s})`;
+      },
+      tide(t, w) {
+        const yp = (w.baseY / AREA_H) * Math.PI * 0.5;
+        const dx = Math.sin(t + yp) * w.ampX * 2;
+        const dy = Math.cos(t + yp) * w.ampY * 0.5;
+        return `translate(${dx}px,${dy}px)`;
+      }
+    };
+
+    const effectFn = EFFECTS[EFFECT] || EFFECTS.float;
+
+    window.nextFrame = function () {
+      const t = frameIndex * STEP;
+      for (const w of wordElements) {
+        w.el.style.transform = effectFn(t, w);
+      }
+      frameIndex++;
+    };
+
+    window.animationReady = true;
+  </script>
+</body>
+</html>

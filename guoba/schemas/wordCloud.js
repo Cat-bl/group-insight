@@ -98,6 +98,54 @@ export default [
   },
   {
     component: "Divider",
+    label: "输出格式"
+  },
+  {
+    field: "groupManager.wordCloud.outputFormat",
+    label: "输出格式",
+    helpMessage: "词云输出为静态图片还是动态GIF",
+    component: "RadioGroup",
+    componentProps: {
+      options: [
+        { label: "静态图片", value: "static" },
+        { label: "动态 GIF", value: "gif" }
+      ]
+    }
+  },
+  {
+    field: "groupManager.wordCloud.gif.effect",
+    label: "动画效果",
+    helpMessage: "GIF词云的动画风格",
+    component: "RadioGroup",
+    componentProps: {
+      options: [
+        { label: "漂浮", value: "float" },
+        { label: "脉动", value: "pulse" },
+        { label: "波浪", value: "wave" },
+        { label: "星云", value: "galaxy" },
+        { label: "涟漪", value: "ripple" },
+        { label: "萤火虫", value: "firefly" },
+        { label: "弹跳", value: "bounce" },
+        { label: "潮汐", value: "tide" }
+      ]
+    }
+  },
+  {
+    field: "groupManager.wordCloud.gif.frames",
+    label: "GIF 帧数",
+    helpMessage: "GIF动图的帧数，越多越流畅但文件越大",
+    component: "InputNumber",
+    componentProps: { min: 10, max: 40, placeholder: "15-25 推荐" }
+  },
+  {
+    field: "groupManager.wordCloud.gif.duration",
+    label: "动画周期(ms)",
+    helpMessage: "一轮漂浮动画的总时长，帧间隔自动计算",
+    component: "InputNumber",
+    componentProps: { min: 1000, max: 5000, step: 200, placeholder: "2400" }
+  },
+  {
+    component: "Divider",
     label: "渲染质量"
   },
   {
