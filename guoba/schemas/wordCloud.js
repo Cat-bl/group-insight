@@ -131,7 +131,12 @@ export default [
     }
   },
   {
-    field: "groupManager.wordCloud.gif.frames",
+    field: "groupManager.wordCloud.gif.randomEffect",
+    label: "随机动画效果",
+    helpMessage: "开启后每次生成随机选择一种动画效果，上方的效果选择将被忽略",
+    component: "Switch"
+  },
+  {
     label: "GIF 帧数",
     helpMessage: "GIF动图的帧数，越多越流畅但文件越大",
     component: "InputNumber",

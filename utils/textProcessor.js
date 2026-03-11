@@ -157,6 +157,27 @@ export default class TextProcessor {
       .trim()
   }
 
+  /** 匹配机器人命令的正则列表 */
+  static COMMAND_PATTERNS = [
+    /^#?(群聊)?词云\s*(当天|三天|七天)?$/,
+    /^#?个人词云\s*(当天|三天|七天)?$/,
+    /^#?群聊(总结|报告)\s*(今天|昨天|前天|\d{4}-\d{2}-\d{2})?$/,
+    /^#?强制生成报告\s*(今天|昨天|前天|\d{4}-\d{2}-\d{2})?$/,
+    /^#?清除(艾特|at)数据$/,
+    /^#?清除全部(艾特|at)数据$/,
+    /^(谁|哪个.*)(艾特|@|at)(我|他|她|它)$/
+  ]
+
+  /**
+   * 判断原始消息是否为机器人命令
+   * @param {string} text - 原始消息文本
+   */
+  isCommand(text) {
+    if (!text) return false
+    const trimmed = text.trim()
+    return TextProcessor.COMMAND_PATTERNS.some(re => re.test(trimmed))
+  }
+
   /**
    * 对文本进行分词
    * @param {string} text - 文本
@@ -275,7 +296,9 @@ export default class TextProcessor {
     const allWords = []
 
     for (const msg of messages) {
-      const cleanedText = this.cleanText(msg.message || msg.msg || '')
+      const rawText = msg.message || msg.msg || ''
+      if (this.isCommand(rawText)) continue
+      const cleanedText = this.cleanText(rawText)
       if (!cleanedText) continue
 
       const words = this.cut(cleanedText, minLength)
@@ -310,7 +333,9 @@ export default class TextProcessor {
 
     for (const msg of messages) {
       const userId = msg.user_id || msg.sender?.user_id || 'unknown'
-      const cleanedText = this.cleanText(msg.message || msg.msg || '')
+      const rawText = msg.message || msg.msg || ''
+      if (this.isCommand(rawText)) continue
+      const cleanedText = this.cleanText(rawText)
       if (!cleanedText) continue
 
       const words = this.cut(cleanedText, minLength)

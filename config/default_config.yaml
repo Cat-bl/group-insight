@@ -153,6 +153,8 @@ groupManager:
       # bounce - 弹跳（词语上下弹跳）
       # tide - 潮汐（所有词语整体缓慢涌动）
       effect: 'float'
+      # 随机动画效果（开启后每次生成随机选择一种效果，effect 配置将被忽略）
+      randomEffect: false
 
     # 渲染质量配置
     render:

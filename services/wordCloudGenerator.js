@@ -174,6 +174,12 @@ export default class WordCloudGenerator {
     const height = gifConfig.height || 400
     const backgroundColor = this.config.backgroundColor || '#ffffff'
     const effect = gifConfig.effect || 'float'
+    const randomEffect = gifConfig.randomEffect !== false ? gifConfig.randomEffect : false
+
+    const EFFECT_LIST = ['float', 'pulse', 'wave', 'galaxy', 'ripple', 'firefly', 'bounce', 'tide']
+    const finalEffect = randomEffect
+      ? EFFECT_LIST[Math.floor(Math.random() * EFFECT_LIST.length)]
+      : effect
 
     try {
       logger.info(`开始生成 GIF 词云，消息数: ${messages.length}，帧数: ${frameCount}`)
@@ -195,7 +201,7 @@ export default class WordCloudGenerator {
         height,
         backgroundColor,
         frameCount,
-        effect,
+        effect: finalEffect,
         groupName,
         timeRange: this.getTimeRangeText(days),
         messageCount: messages.length,
