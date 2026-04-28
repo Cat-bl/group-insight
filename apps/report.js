@@ -35,6 +35,11 @@ export class ReportPlugin extends plugin {
           reg: '^#强制生成报告\\s*(今天|昨天|前天|\\d{4}-\\d{2}-\\d{2})?$',
           fnc: 'forceGenerateReport',
           permission: 'master'
+        },
+        {
+          reg: '^#清除(生成|报告)锁\\s*(今天|昨天|前天|\\d{4}-\\d{2}-\\d{2})?$',
+          fnc: 'clearGeneratingLock',
+          permission: 'master'
         }
       ]
     })
@@ -956,6 +961,50 @@ export class ReportPlugin extends plugin {
     } catch (err) {
       logger.error(`[报告] 强制生成报告错误: ${err}`)
       return this.reply(`生成报告失败: ${err.message}`, true)
+    }
+  }
+
+  /**
+   * 清除生成锁（主人专用）
+   * 用于机器人重启后锁未正常释放的场景
+   */
+  async clearGeneratingLock(e) {
+    try {
+      const match = e.msg.match(/(今天|昨天|前天|(\d{4}-\d{2}-\d{2}))/)
+      let targetDate = moment().format('YYYY-MM-DD')
+      let dateLabel = '今天'
+
+      if (match) {
+        if (match[1] === '昨天') {
+          targetDate = moment().subtract(1, 'days').format('YYYY-MM-DD')
+          dateLabel = '昨天'
+        } else if (match[1] === '前天') {
+          targetDate = moment().subtract(2, 'days').format('YYYY-MM-DD')
+          dateLabel = '前天'
+        } else if (match[2]) {
+          const date = moment(match[2], 'YYYY-MM-DD', true)
+          if (date.isValid()) {
+            targetDate = date.format('YYYY-MM-DD')
+            dateLabel = moment(targetDate).format('YYYY年MM月DD日')
+          } else {
+            return this.reply('日期格式错误，请使用：YYYY-MM-DD（如 2024-11-01）', true)
+          }
+        }
+      }
+
+      const lockKey = `Yz:groupManager:generating:${e.group_id}:${targetDate}`
+      const existed = await redis.get(lockKey)
+
+      if (existed) {
+        await redis.del(lockKey)
+        logger.info(`[报告] 主人 ${e.user_id} 手动清除群 ${e.group_id} ${dateLabel} 的生成锁`)
+        return this.reply(`已清除群 ${e.group_id} ${dateLabel} 的生成锁`, true)
+      } else {
+        return this.reply(`群 ${e.group_id} ${dateLabel} 没有生成锁`, true)
+      }
+    } catch (err) {
+      logger.error(`[报告] 清除生成锁失败: ${err}`)
+      return this.reply(`清除失败: ${err.message}`, true)
     }
   }
 
